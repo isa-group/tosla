@@ -1,0 +1,51 @@
+PREFIX odrl: <http://www.w3.org/ns/odrl/2/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT DISTINCT ?service ?compensation ?SLI (GROUP_CONCAT(CONCAT(STR("value"), " ", STR(?opSymbol), " ", STR(?value)); separator=" AND ") AS ?interval) ?credit
+WHERE {
+  # Duty de compensación
+  ?compensation a odrl:Duty ;
+                    dcterms:description ?description ;
+                    odrl:action ?actionNode ;
+                    odrl:constraint ?constraint ;
+                    odrl:target ?service .
+
+  # Acción
+  ?actionNode rdf:value odrl:compensate .
+
+  # Refinements
+  OPTIONAL {
+    ?actionNode odrl:refinement ?creditRef .
+    ?creditRef odrl:leftOperand :serviceCreditPercentage ;
+               odrl:rightOperand ?credit .
+  }
+
+  # CASO 1: constraint simple
+  {
+    ?constraint a odrl:Constraint ;
+                odrl:leftOperand ?SLI ;
+                odrl:operator ?operator ;
+                odrl:rightOperand ?value .
+  }
+  UNION
+  # CASO 2: logical constraint
+  {
+    ?constraint a odrl:LogicalConstraint ;
+                odrl:and ?list .
+    ?list rdf:rest*/rdf:first ?subConstraint .
+    ?subConstraint  odrl:leftOperand ?SLI ;
+                    odrl:operator ?operator ;
+                    odrl:rightOperand ?value .
+  }
+
+  # Convertir operador a simbolo
+  VALUES (?operator ?opSymbol) {
+    (odrl:lt "<")
+    (odrl:lteq "≤")
+    (odrl:eq "=")
+    (odrl:gt ">")
+    (odrl:gteq "≥")
+  }
+}
+GROUP BY ?service ?compensation ?SLI ?credit ORDER BY ?service

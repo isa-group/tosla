@@ -1,0 +1,18 @@
+PREFIX odrl: <http://www.w3.org/ns/odrl/2/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX tosl: <https://w3id.org/tosl/>
+
+SELECT ?permission (GROUP_CONCAT(DISTINCT ?actionValue; separator=", ") AS ?actions)
+        (GROUP_CONCAT(DISTINCT ?target; separator=", ") AS ?targets) ?assignee
+WHERE {
+    ?permission a odrl:Permission .
+    ?permission odrl:target ?target .
+    ?permission odrl:assignee ?assignee .
+    ?assignee a tosl:Customer .
+
+    ?permission odrl:action ?actionNode .
+    OPTIONAL { ?actionNode rdf:value ?actionVal . }
+
+    BIND(COALESCE(?actionVal, ?actionNode) AS ?actionValue)
+
+} GROUP BY ?permission ?assignee

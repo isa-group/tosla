@@ -1,0 +1,197 @@
+@prefix : <http://example.com/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .   
+@prefix time: <http://www.w3.org/2006/time#> .
+@prefix qudt: <http://qudt.org/schema/qudt#> .
+@prefix usdl-agreement: <http://www.linked-usdl.org/ns/usdl-agreement#> .
+@prefix odrl: <http://www.w3.org/ns/odrl/2/> .
+@prefix tosl: <https://w3id.org/tosl/> .
+@prefix tosla: <https://w3id.org/tosla/> .
+@base <http://example.com> .
+
+#################################################
+# Agreement
+#################################################
+
+:cedaloSLA a odrl:Agreement ;
+    dcterms:title "Cedalo Service Level Agreement (SLA)"^^xsd:string ;
+    dcterms:creator "Cedalo"^^xsd:string ;
+    dcterms:source <https://cedalo.com/service-level-agreement/> ;
+    dcterms:requires <https://cedalo.com/terms-and-conditions/> ; 
+    odrl:obligation :commitmentSPlanSingleNode ;  
+    odrl:assigner :cedalo .
+
+#################################################
+# Parties: S, M, L, Enterprise Customers
+#################################################
+
+:cedalo a tosl:Provider ;
+    foaf:name "Cedalo" ;
+    foaf:homepage <https://cedalo.com/>;
+    odrl:assignerOf :serviceSPlanSingleNode, :serviceSPlanHighAvailability, :serviceMPlanSingleNode, 
+                    :serviceMPlanHighAvailability, :serviceLPlanSingleNode, :serviceLPlanHighAvailability, 
+                    :serviceEnterprise .
+
+:customerSPlan a tosl:Customer;
+    dcterms:description "This party represents the customer who subscribes to the S plan" .
+
+:customerMPlan a tosl:Customer;
+    dcterms:description "This party represents the customer who subscribes to the M plan" .
+
+:customerLPlan a tosl:Customer;
+    dcterms:description "This party represents the customer who subscribes to the L plan" .
+
+:customerEnterprisePlan a tosl:Customer;
+    dcterms:description "This party represents the customer who subscribes to the Enterprise plan" .
+
+#################################################
+# Assets description
+#################################################
+
+:serviceSPlanSingleNode a tosl:Service ;
+    dcterms:description "Single Node service for Plan S: provides a standalone Pro Mosquitto MQTT broker, ideal for basic IoT deployments." ;
+    dcterms:rightsHolder :cedalo .
+
+:serviceSPlanHighAvailability a tosl:Service ;
+    dcterms:description "High Availability for Plan S: connects and synchronizes multiple instances of Pro Mosquitto MQTT broker, ensuring operational continuity in case of node failure." ;
+    dcterms:rightsHolder :cedalo .
+
+:serviceMPlanSingleNode a tosl:Service ;
+    dcterms:description "Single Node service for Plan M: dedicated Pro Mosquitto MQTT broker for medium-complexity IoT environments." ;
+    dcterms:rightsHolder :cedalo .
+
+:serviceMPlanHighAvailability a tosl:Service ;
+    dcterms:description "High Availability for Plan M: synchronized cluster of Pro Mosquitto MQTT brokers for high availability and fault tolerance." ;
+    dcterms:rightsHolder :cedalo .
+
+:serviceLPlanSingleNode a tosl:Service ;
+    dcterms:description "Single Node service for Plan L: Pro Mosquitto MQTT broker optimized for larger-scale IoT workloads." ;
+    dcterms:rightsHolder :cedalo .
+
+:serviceLPlanHighAvailability a tosl:Service ;
+    dcterms:description "High Availability for Plan L: deployment of multiple synchronized Pro Mosquitto MQTT brokers in a cluster, ensuring uninterrupted service." ;
+    dcterms:rightsHolder :cedalo .
+
+:serviceEnterprise a tosl:Service ;
+    dcterms:description "Enterprise HA Service: Pro Mosquitto MQTT platform with full synchronization of state, configuration, and data between brokers, for maximum reliability and scalability." ;
+    dcterms:rightsHolder :cedalo .
+
+#################################################
+# Properties 
+#################################################
+
+:monthlyUptimePercentage a odrl:LeftOperand ;
+    rdfs:label "Monthly Uptime Percentage"@en ;
+    dcterms:description "The percentage of minutes that the service has been active during a month"@en ;
+    usdl-agreement:hasMetric :monthlyUptimeMetric .
+
+:monthlyUptimeMetric a usdl-agreement:Metric ;
+    qudt:unit <http://qudt.org/vocab/unit#Percent> ;
+    usdl-agreement:hasExpression "100 - (100 * ?inactivityMinutes / 43200)"^^xsd:string ;
+    usdl-agreement:hasMeasuringInterval :monthlyInterval .
+
+:monthlyInterval a time:Interval ;
+    time:hasDurationDescription [
+        a time:DurationDescription ;
+        time:months "1"^^xsd:integer
+    ] . 
+
+:serviceCreditPercentage a odrl:LeftOperand ;
+    dcterms:description "Percentage of the net monthly subscription fee applicable to the use of the service and non-refundable as cash."@en .
+
+
+#################################################
+# LeftOperand: Average Ticket Response Time
+#################################################
+
+:averageTicketResponseTime a odrl:LeftOperand ;
+    rdfs:label "Average Ticket Response Time"@en ;
+    dcterms:description "Average time in hours to respond to customer support tickets over a month." ;
+    usdl-agreement:hasMetric :averageTicketResponseTimeMetric .
+
+
+:averageTicketResponseTimeMetric a usdl-agreement:Metric ;
+    qudt:unit <http://qudt.org/vocab/unit#Hour> ;
+    usdl-agreement:hasExpression "SUM(?responseTimeHours) / COUNT(?tickets)" ;
+    usdl-agreement:hasMeasuringInterval :monthlyInterval .
+
+
+#################################################
+# Obligations, permission and prohibition 
+#################################################
+
+# Plan S Single Node Obligation
+
+:commitmentSPlanSingleNode a odrl:Duty ;
+    dcterms:description "Cedalo must provide an uptime percentage of at least 97%";
+    odrl:target :serviceSPlanSingleNode ;
+    odrl:assignee :cedalo ;
+    odrl:action [
+        a odrl:Action ;
+        rdf:value :provide;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand :monthlyUptimePercentage;
+            odrl:operator odrl:gteq ;
+            odrl:rightOperand "97"^^xsd:decimal
+        ] ;
+        odrl:refinement [
+            a odrl:Constraint ;
+            odrl:leftOperand :averageTicketResponseTime ;
+            odrl:operator odrl:lteq ;
+            odrl:rightOperand "2"^^xsd:decimal
+        ] ;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand odrl:timeInterval;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "P30D"^^xsd:duration
+        ] ; 
+    ] ;
+    odrl:consequence :compensation15_SPlanSingleNode .
+
+
+:compensation15_SPlanSingleNode a odrl:Duty ;
+    dcterms:description "Compensation to the customer for non-compliance";
+    odrl:compensatedParty :customerSPlan ;
+    odrl:compensatingParty :cedalo;
+    odrl:target :serviceSPlanSingleNode ;
+    odrl:action [
+        a odrl:Action ;
+        rdf:value odrl:compensate;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand :serviceCreditPercentage;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "15"^^xsd:decimal
+        ] ;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand odrl:delayPeriod;
+            odrl:operator odrl:lteq ;
+            odrl:rightOperand "P30D"^^xsd:duration
+        ] ;
+    ] ;
+    odrl:constraint [
+        a odrl:LogicalConstraint ;
+        odrl:and (
+            [
+                a odrl:Constraint ;
+                odrl:leftOperand :averageTicketResponseTime ;
+                odrl:operator odrl:gteq ;
+                odrl:rightOperand "2"^^xsd:decimal
+            ]
+            [
+                a odrl:Constraint ;
+                odrl:leftOperand :averageTicketResponseTime ;
+                odrl:operator odrl:lt ;
+                odrl:rightOperand "4"^^xsd:decimal
+            ]
+        )
+    ] .

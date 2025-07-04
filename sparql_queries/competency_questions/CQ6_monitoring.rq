@@ -1,0 +1,24 @@
+PREFIX tosl: <https://w3id.org/tosl/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX odrl: <http://www.w3.org/ns/odrl/2/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX tosla: <https://w3id.org/tosla/> 
+
+SELECT ?duty ?liabilityType ?liableParty ?liabilityDescription 
+WHERE {
+    ?duty a odrl:Duty ;
+        tosl:liability ?liability .
+
+    ?liability a tosl:Liability ;
+        rdf:value ?liabilityType ;
+        tosl:liableParty ?liableParty ;
+        dcterms:description ?liabilityDescription .
+
+    FILTER(
+        ?liabilityType IN (
+            tosla:conditionEvaluation,
+            tosla:metricComputation
+        )
+    )
+} ORDER BY ?duty ?liability

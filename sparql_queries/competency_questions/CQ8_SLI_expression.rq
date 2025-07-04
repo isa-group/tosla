@@ -1,0 +1,25 @@
+PREFIX odrl: <http://www.w3.org/ns/odrl/2/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX usdl-agreement: <http://www.linked-usdl.org/ns/usdl-agreement#>
+PREFIX qudt: <http://qudt.org/schema/qudt#>
+
+SELECT DISTINCT ?leftOperand ?metricLabel ?expression ?unit ?interval
+WHERE {
+  ?leftOperand a odrl:LeftOperand ;
+               rdfs:label ?metricLabel ;
+               usdl-agreement:hasMetric ?metric .
+
+  OPTIONAL {
+    ?metric usdl-agreement:hasExpression ?expression .
+  }
+
+  OPTIONAL {
+    ?metric qudt:unit ?unit .
+  }
+
+  OPTIONAL {
+    ?metric usdl-agreement:hasMeasuringInterval ?interval .
+  } 
+  
+} ORDER BY ?leftOperand

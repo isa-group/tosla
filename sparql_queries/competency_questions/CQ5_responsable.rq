@@ -1,0 +1,20 @@
+PREFIX odrl: <http://www.w3.org/ns/odrl/2/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+
+SELECT DISTINCT ?service ?commitment ?assignee ?assigneeName
+WHERE {
+  ?commitment a odrl:Duty ;
+              dcterms:description ?description ;
+              odrl:target ?service ;
+              odrl:assignee ?assignee ;
+              odrl:action ?actionNode .
+
+  # Solo las obligaciones de proveer el servicio
+  ?actionNode rdf:value tosla:guarantee .
+
+  OPTIONAL {
+    ?assignee foaf:name ?assigneeName .
+  }
+  
+} ORDER BY ?service

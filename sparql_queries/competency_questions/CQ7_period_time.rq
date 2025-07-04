@@ -1,0 +1,20 @@
+PREFIX odrl: <http://www.w3.org/ns/odrl/2/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+
+SELECT DISTINCT ?service ?duty ?duration
+WHERE {
+  ?duty a odrl:Duty ;
+        dcterms:description ?description ;
+        odrl:target ?service ;
+        odrl:action ?actionNode .
+
+  ?actionNode rdf:value tosla:guarantee .
+
+  OPTIONAL {
+    ?actionNode odrl:refinement ?refinement .
+    ?refinement odrl:leftOperand odrl:timeInterval ;
+                odrl:rightOperand ?durationLiteral .
+    BIND(STR(?durationLiteral) AS ?duration)
+  }
+  
+}ORDER BY ?service

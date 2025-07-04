@@ -1,0 +1,19 @@
+PREFIX odrl: <http://www.w3.org/ns/odrl/2/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX tosl: <https://w3id.org/tosl/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+SELECT ?duty (GROUP_CONCAT(DISTINCT ?actionValue; separator=", ") AS ?actions)
+        (GROUP_CONCAT(DISTINCT ?target; separator=", ") AS ?targets) ?assignee
+WHERE {
+    ?duty a odrl:Duty .
+    ?duty odrl:assignee ?assignee .
+    ?duty odrl:target ?target .
+    ?assignee a tosl:Provider .
+
+    ?duty odrl:action ?actionNode .
+    OPTIONAL { ?actionNode rdf:value ?actionVal . }
+
+    BIND(COALESCE(?actionVal, ?actionNode) AS ?actionValue)
+    
+} GROUP BY ?duty ?assignee

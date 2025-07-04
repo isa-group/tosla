@@ -1,0 +1,169 @@
+@prefix : <http://example.com/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .   
+@prefix time: <http://www.w3.org/2006/time#> .
+@prefix qudt: <http://qudt.org/schema/qudt#> .
+@prefix usdl-agreement: <http://www.linked-usdl.org/ns/usdl-agreement#> .
+@prefix odrl: <http://www.w3.org/ns/odrl/2/> .
+@prefix tosl: <https://w3id.org/tosl/> .
+@prefix tosla: <https://w3id.org/tosla/> .
+@base <http://example.com> .
+
+#################################################
+# Agreement
+#################################################
+
+:rackspaceSLA a odrl:Agreement ;
+    dcterms:title "Cloud Block Storage Service Level Agreement" ;
+    dcterms:creator "Rackspace" ;
+    dcterms:issued "2018-08-13"^^xsd:date ;
+    odrl:assigner :rackspace .
+
+#################################################
+# Parties
+#################################################
+
+:rackspace a tosl:Provider ;
+    foaf:name "Rackspace" ;
+    foaf:homepage <https://www.rackspace.com/> .
+
+:customer a tosl:Customer ;
+    dcterms:description "Customer consuming Rackspace Cloud Block Storage Service" .
+
+#################################################
+# Assets description
+#################################################
+
+:cloudBlockStorageService a tosl:Service ;
+    dcterms:description "Rackspace Cloud Block Storage volumes covered by the SLA" .
+
+#################################################
+# Properties 
+#################################################
+
+:monthlyUptimePercentage a odrl:LeftOperand ;
+    rdfs:label "Monthly Uptime Percentage" ;
+    dcterms:description "Percentage availability of Cloud Block Storage in a monthly billing period" ;
+    usdl-agreement:hasMetric :monthlyUptimeMetric .
+
+:monthlyUptimeMetric a usdl-agreement:Metric ;
+    qudt:unit <http://qudt.org/vocab/unit#Percent> ;
+    usdl-agreement:hasExpression "100 * ((?totalMinutes - ?downtimeMinutes) / ?totalMinutes)" ;
+    usdl-agreement:hasMeasuringInterval :monthlyInterval .
+
+:monthlyInterval a time:Interval ;
+    time:hasDurationDescription [
+        a time:DurationDescription ;
+        time:months "1"^^xsd:integer
+    ] .
+
+:serviceCreditPercentage a odrl:LeftOperand ;
+    rdfs:label "Service Credit Percentage" ;
+    dcterms:description "Percentage of Service Fee to credit" .
+
+#################################################
+# Obligations, permission and prohibition 
+#################################################
+
+# Cloud Block Storage Service Level Guarantee
+
+:uptimeCommitmentBlockStorage a odrl:Duty ;
+    dcterms:description "Rackspace must provide at least 99.99% availability per month." ;
+    odrl:assignee :rackspace ;
+    odrl:target :cloudBlockStorageService ;
+    odrl:action odrl:provide ;
+    odrl:constraint [
+        odrl:leftOperand :monthlyUptimePercentage ;
+        odrl:operator odrl:gteq ;
+        odrl:rightOperand "99.99"^^xsd:decimal
+    ] ;
+    odrl:consequence :compensationBlockStorage25, :compensationBlockStorage40, :compensationBlockStorage55,
+                     :compensationBlockStorage70, :compensationBlockStorage85, :compensationBlockStorage100 .
+
+
+:compensationBlockStorage25 a odrl:Duty ;
+    dcterms:description "25% credit if uptime <99.99% but ≥99.0%" ;
+    odrl:action odrl:compensate ;
+    odrl:compensatedParty :customer ;
+    odrl:compensatingParty :rackspace ;
+    odrl:refinement [
+        a odrl:Constraint ;
+        odrl:leftOperand :serviceCreditPercentage ;
+        odrl:operator odrl:eq ;
+        odrl:rightOperand "25"^^xsd:decimal
+    ] ;
+    odrl:constraint [
+        a odrl:LogicalConstraint ;
+        odrl:and (
+            [ 
+                a odrl:Constraint ;
+                odrl:leftOperand :monthlyUptimePercentage ; 
+                odrl:operator odrl:lt ; 
+                odrl:rightOperand "99.99"^^xsd:decimal 
+            ]
+            [ 
+                a odrl:Constraint ;
+                odrl:leftOperand :monthlyUptimePercentage ; 
+                odrl:operator odrl:gteq ; 
+                odrl:rightOperand "99.0"^^xsd:decimal 
+            ]
+        )
+    ] .
+
+:compensationBlockStorage40 a odrl:Duty ;
+    dcterms:description "40% credit if uptime <99.0% but ≥98.0%" ;
+    odrl:action odrl:compensate ;
+    odrl:compensatedParty :customer ;
+    odrl:compensatingParty :rackspace ;
+    odrl:refinement [
+        a odrl:Constraint ;
+        odrl:leftOperand :serviceCreditPercentage ;
+        odrl:operator odrl:eq ;
+        odrl:rightOperand "40"^^xsd:decimal
+    ] ;
+    odrl:constraint [
+        a odrl:LogicalConstraint ;
+        odrl:and (
+            [ 
+                a odrl:Constraint ;
+                odrl:leftOperand :monthlyUptimePercentage ; 
+                odrl:operator odrl:lt ; 
+                odrl:rightOperand "99.0"^^xsd:decimal 
+            ]
+            [ 
+                a odrl:Constraint ;
+                odrl:leftOperand :monthlyUptimePercentage ; 
+                odrl:operator odrl:gteq ; 
+                odrl:rightOperand "98.0"^^xsd:decimal 
+            ]
+        )
+    ] .
+
+# Cloud Database Instances SLA
+
+
+# Cloud DBA Monitoring SLA
+
+# Cloud Files SLA
+
+# Cloud Load Balancers SLA
+
+# Rackspace Monitoring Services SLA
+
+# Cloud Servers y OnMetal Servers
+
+# Cloud Support SLA
+
+# Cloud Queues SLA
+
+#################################################
+# Exclusions, limitations of liabilities 
+#################################################
+
+

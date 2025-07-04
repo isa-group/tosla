@@ -1,0 +1,65 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix odrl: <http://www.w3.org/ns/odrl/2/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix profile: <http://www.w3.org/ns/dx/prof/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix vann: <http://purl.org/vocab/vann/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix tosl: <https://w3id.org/tosl/> .
+@prefix tosla: <https://w3id.org/tosla/> .
+
+
+#################################################################
+#    Individuals
+#################################################################
+
+### https://w3id.org/tosla/guarantee
+tosl:guarantee a owl:NamedIndividual, skos:Concept, odrl:Action ;
+    odrl:includedIn odrl:use ;
+    rdfs:isDefinedBy tosla: ;
+    rdfs:label "Guarantee" ;
+    skos:definition "The action by which the provider commits to delivering the service at a specified level of guarantee, such as availability, performance, or quality, in accordance with the terms of the agreement."@en .
+
+### https://w3id.org/tosla/metricComputation
+tosla:metricComputation a owl:NamedIndividual, skos:Concept, tosl:Liability ;
+    rdfs:isDefinedBy tosla: ;
+    rdfs:label "Metric Computation" ;
+    skos:definition "Responsibility for computing and producing metrics according to defined formulas."@en .
+
+
+### https://w3id.org/tosla/conditionEvaluation
+tosla:conditionEvaluation a owl:NamedIndividual, skos:Concept, tosl:Liability ;
+    rdfs:isDefinedBy tosla: ;
+    rdfs:label "Condition Evaluation" ;
+    skos:definition "Responsibility for evaluating whether agreement conditions are fulfilled."@en .
+
+
+### https://w3id.org/tosla/scheduledMaintenance
+tosla:scheduledMaintenance a owl:NamedIndividual, skos:Concept, tosl:Liability ;
+    rdfs:isDefinedBy tosla: ;
+    rdfs:label "Scheduled Maintenance" ;
+    skos:definition "Responsibility related to the interruption of service due to planned or scheduled maintenance activities."@en .
+
+
+### https://w3id.org/tosla/selfHosting
+tosla:selfHosting a owl:NamedIndividual, skos:Concept, tosl:Liability ;
+    rdfs:isDefinedBy tosla: ;
+    rdfs:label "Self Hosting" ;
+    skos:definition "Responsibility arising from the fact that the product is hosted by the Customer or a third party rather than by the provider."@en .
+
+
+### https://w3id.org/tosla/paymentOverdue
+tosla:paymentOverdue a owl:NamedIndividual, skos:Concept, tosl:Liability ;
+    rdfs:isDefinedBy tosla: ;
+    rdfs:label "Payment Overdue" ;
+    skos:definition "Responsibility for the unavailability of the service due to the Customer’s failure to pay any fees or charges when due."@en .
+
+
+### https://w3id.org/tosla/networkFailure
+tosla:networkFailure a owl:NamedIndividual, skos:Concept, tosl:Liability ;
+    rdfs:isDefinedBy tosla: ;
+    rdfs:label "Network Failure" ;
+    skos:definition "Responsibility related to the unavailability of the service caused by Internet access issues or network failures outside the provider’s control."@en .

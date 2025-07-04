@@ -1,0 +1,231 @@
+{
+    "@context": {
+      "odrl": "http://www.w3.org/ns/odrl/2/",
+      "tosl": "https://w3id.org/tosl/",
+      "dcterms": "http://purl.org/dc/terms/",
+      "foaf": "http://xmlns.com/foaf/0.1/",
+      "xsd": "http://www.w3.org/2001/XMLSchema#",
+      "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    },
+    "@graph": [
+      {
+        "@id": "http://example.com/cedaloSLA",
+        "@type": "odrl:Agreement",
+        "dcterms:source": { "@id": "https://cedalo.com/service-level-agreement/" },
+        "dcterms:title": { "@value": "Cedal Service Level Agreement (SLA)", "@type": "xsd:string" },
+        "dcterms:creator": { "@value": "Cedalo", "@type": "xsd:string" },
+        "dcterms:requires": { "@id": "https://cedalo.com/terms-and-conditions/" },
+        "odrl:assigner": { "@id": "http://example.com/cedalo" },
+        "odrl:obligation": [
+          { "@id": "http://example.com/obligationSPlanSingleNode" },
+          { "@id": "http://example.com/obligationSPlanHighAvailability" }
+        ]
+      },
+      {
+        "@id": "http://example.com/cedalo",
+        "@type": "tosl:Provider",
+        "foaf:name": "Cedalo",
+        "foaf:homepage": { "@id": "https://cedalo.com/" },
+        "odrl:assignerOf": [
+          { "@id": "http://example.com/serviceSingleNode" },
+          { "@id": "http://example.com/serviceHighAvailability" }
+        ]
+      },
+      {
+        "@id": "http://example.com/customerSPlan",
+        "@type": "tosl:Customer",
+        "dcterms:description": "This party represents the customer who subscribes to the S plan"
+      },
+      {
+        "@id": "http://example.com/serviceSingleNode",
+        "@type": "odrl:Asset",
+        "dcterms:description": "The Service Single Node is the basic service provided by Cedalo.",
+        "dcterms:rightsHolder": { "@id": "http://example.com/cedalo" }
+      },
+      {
+        "@id": "http://example.com/serviceHighAvailability",
+        "@type": "odrl:Asset",
+        "dcterms:description": "The High Availability service connects multiple brokers and synchronises their internal status, configuration and data, guaranteeing uninterrupted service even if a single node goes down",
+        "dcterms:rightsHolder": { "@id": "http://example.com/cedalo" }
+      },
+      {
+        "@id": "http://example.com/obligationSPlanSingleNode",
+        "@type": "odrl:Duty",
+        "dcterms:description": "Cedalo must provide an uptime percentage of at least 97%",
+        "odrl:target": { "@id": "http://example.com/serviceSingleNode" },
+        "odrl:assignee": { "@id": "http://example.com/cedalo" },
+        "odrl:action": {
+          "rdf:value": "http://example.com/provide",
+          "odrl:refinement": [
+            { "odrl:leftOperand": "http://example.com/monthlyUptimePercentage", "odrl:operator": "odrl:gteq", "odrl:rightOperand": 97 },
+            { "odrl:leftOperand": "odrl:timeInterval", "odrl:operator": "odrl:eq", "odrl:rightOperand": "P30D" }
+          ]
+        },
+        "odrl:consequence": [
+          {
+            "@type": "odrl:Duty",
+            "dcterms:description": "Customer must claim service credits if uptime falls below the guaranteed level",
+            "odrl:assignee": {
+              "@id": "http://example.com/customerSPlan"
+            },
+            "odrl:target": {
+              "@id": "http://example.com/serviceSingleNode"
+            },
+            "odrl:action": {
+              "@id": "https://w3id.org/tosl/claim"
+            },
+            "odrl:constraint": {
+              "odrl:leftOperand": "http://example.com/monthlyUptimePercentage",
+              "odrl:operator": "odrl:lt",
+              "odrl:rightOperand": 97
+            }
+          },          
+          {
+            "@type": "odrl:Duty",
+            "dcterms:description": "Compensation 7.5%",
+            "odrl:compensatedParty": { "@id": "http://example.com/customerSPlan" },
+            "odrl:compensatingParty": { "@id": "http://example.com/cedalo" },
+            "odrl:action": {
+              "rdf:value": "odrl:compensate",
+              "odrl:refinement": [
+                { "odrl:leftOperand": "http://example.com/serviceCreditPercentage", "odrl:operator": "odrl:eq", "odrl:rightOperand": 7.5 }
+              ]
+            },
+            "odrl:constraint": {
+              "@type": "odrl:LogicalConstraint",
+              "odrl:and": [
+                { "odrl:leftOperand": "http://example.com/monthlyUptimePercentage", "odrl:operator": "odrl:lt", "odrl:rightOperand": 97 },
+                { "odrl:leftOperand": "http://example.com/monthlyUptimePercentage", "odrl:operator": "odrl:gteq", "odrl:rightOperand": 96 }
+              ]
+            }
+          },
+          {
+            "@type": "odrl:Duty",
+            "dcterms:description": "Compensation 15%",
+            "odrl:compensatedParty": { "@id": "http://example.com/customerSPlan" },
+            "odrl:compensatingParty": { "@id": "http://example.com/cedalo" },
+            "odrl:action": {
+              "rdf:value": "odrl:compensate",
+              "odrl:refinement": [
+                { "odrl:leftOperand": "http://example.com/serviceCreditPercentage", "odrl:operator": "odrl:eq", "odrl:rightOperand": 15 }
+              ]
+            },
+            "odrl:constraint": {
+              "@type": "odrl:LogicalConstraint",
+              "odrl:and": [
+                { "odrl:leftOperand": "http://example.com/monthlyUptimePercentage", "odrl:operator": "odrl:lt", "odrl:rightOperand": 96 },
+                { "odrl:leftOperand": "http://example.com/monthlyUptimePercentage", "odrl:operator": "odrl:gteq", "odrl:rightOperand": 87 }
+              ]
+            }
+          },
+          {
+            "@type": "odrl:Duty",
+            "dcterms:description": "Compensation 25%",
+            "odrl:compensatedParty": { "@id": "http://example.com/customerSPlan" },
+            "odrl:compensatingParty": { "@id": "http://example.com/cedalo" },
+            "odrl:action": {
+              "rdf:value": "odrl:compensate",
+              "odrl:refinement": [
+                { "odrl:leftOperand": "http://example.com/serviceCreditPercentage", "odrl:operator": "odrl:eq", "odrl:rightOperand": 25 }
+              ]
+            },
+            "odrl:constraint": {
+              "odrl:leftOperand": "http://example.com/monthlyUptimePercentage",
+              "odrl:operator": "odrl:lt",
+              "odrl:rightOperand": 87
+            }
+          }
+        ]
+      }, 
+      {
+        "@id": "http://example.com/obligationSPlanHighAvailability",
+        "@type": "odrl:Duty",
+        "dcterms:description": "Cedalo must provide an uptime percentage of at least 98.5%",
+        "odrl:target": { "@id": "http://example.com/serviceHighAvailability" },
+        "odrl:assignee": { "@id": "http://example.com/cedalo" },
+        "odrl:action": {
+          "rdf:value": "http://example.com/provide",
+          "odrl:refinement": [
+            { "odrl:leftOperand": "http://example.com/monthlyUptimePercentage", "odrl:operator": "odrl:gteq", "odrl:rightOperand": 98.5 },
+            { "odrl:leftOperand": "odrl:timeInterval", "odrl:operator": "odrl:eq", "odrl:rightOperand": "P30D" }
+          ]
+        },
+        "odrl:consequence": [
+          {
+            "@type": "odrl:Duty",
+            "dcterms:description": "Customer must claim service credits if uptime falls below the guaranteed level",
+            "odrl:assignee": {
+              "@id": "http://example.com/customerSPlan"
+            },
+            "odrl:target": {
+              "@id": "http://example.com/serviceSingleNode"
+            },
+            "odrl:action": {
+              "@id": "https://w3id.org/tosl/claim"
+            },
+            "odrl:constraint": {
+              "odrl:leftOperand": "http://example.com/monthlyUptimePercentage",
+              "odrl:operator": "odrl:lt",
+              "odrl:rightOperand": 98.5
+            }
+          },
+          {
+            "@type": "odrl:Duty",
+            "dcterms:description": "Compensation 7.5%",
+            "odrl:compensatedParty": { "@id": "http://example.com/customerSPlan" },
+            "odrl:compensatingParty": { "@id": "http://example.com/cedalo" },
+            "odrl:action": {
+              "rdf:value": "odrl:compensate",
+              "odrl:refinement": [
+                { "odrl:leftOperand": "http://example.com/serviceCreditPercentage", "odrl:operator": "odrl:eq", "odrl:rightOperand": 7.5 }
+              ]
+            },
+            "odrl:constraint": {
+              "@type": "odrl:LogicalConstraint",
+              "odrl:and": [
+                { "odrl:leftOperand": "http://example.com/monthlyUptimePercentage", "odrl:operator": "odrl:lt", "odrl:rightOperand": 98.5 },
+                { "odrl:leftOperand": "http://example.com/monthlyUptimePercentage", "odrl:operator": "odrl:gteq", "odrl:rightOperand": 97.5 }
+              ]
+            }
+          },
+          {
+            "@type": "odrl:Duty",
+            "dcterms:description": "Compensation 15%",
+            "odrl:compensatedParty": { "@id": "http://example.com/customerSPlan" },
+            "odrl:compensatingParty": { "@id": "http://example.com/cedalo" },
+            "odrl:action": {
+              "rdf:value": "odrl:compensate",
+              "odrl:refinement": [
+                { "odrl:leftOperand": "http://example.com/serviceCreditPercentage", "odrl:operator": "odrl:eq", "odrl:rightOperand": 15 }
+              ]
+            },
+            "odrl:constraint": {
+              "@type": "odrl:LogicalConstraint",
+              "odrl:and": [
+                { "odrl:leftOperand": "http://example.com/monthlyUptimePercentage", "odrl:operator": "odrl:lt", "odrl:rightOperand": 97.5 },
+                { "odrl:leftOperand": "http://example.com/monthlyUptimePercentage", "odrl:operator": "odrl:gteq", "odrl:rightOperand": 88.5 }
+              ]
+            }
+          },
+          {
+            "@type": "odrl:Duty",
+            "dcterms:description": "Compensation 25%",
+            "odrl:compensatedParty": { "@id": "http://example.com/customerSPlan" },
+            "odrl:compensatingParty": { "@id": "http://example.com/cedalo" },
+            "odrl:action": {
+              "rdf:value": "odrl:compensate",
+              "odrl:refinement": [
+                { "odrl:leftOperand": "http://example.com/serviceCreditPercentage", "odrl:operator": "odrl:eq", "odrl:rightOperand": 25 }
+              ]
+            },
+            "odrl:constraint": {
+              "odrl:leftOperand": "http://example.com/monthlyUptimePercentage",
+              "odrl:operator": "odrl:lt",
+              "odrl:rightOperand": 88.5
+            }
+          }
+        ]
+      }
+    ]
+  }
+  

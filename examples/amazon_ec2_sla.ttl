@@ -1,0 +1,548 @@
+@prefix : <http://example.com/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .   
+@prefix time: <http://www.w3.org/2006/time#> .
+@prefix qudt: <http://qudt.org/schema/qudt#> .
+@prefix usdl-agreement: <http://www.linked-usdl.org/ns/usdl-agreement#> .
+@prefix odrl: <http://www.w3.org/ns/odrl/2/> .
+@prefix tosl: <https://w3id.org/tosl/> .
+@prefix tosla: <https://w3id.org/tosla/> .
+@base <http://example.com> .
+
+#################################################
+# Agreement
+#################################################
+
+
+:amazonEC2SLA a odrl:Agreement ;
+    dcterms:title "Amazon Compute Service Level Agreement"^^xsd:string ;
+    dcterms:creator "Amazon Web Services"^^xsd:string ;
+    dcterms:source <https://aws.amazon.com/compute/sla/> ;
+    dcterms:requires <https://aws.amazon.com/agreement/> ; 
+    dcterms:issued "2022-05-25"^^xsd:date ;
+    odrl:obligation :commitmentEC2Region, :customerClaimEC2Region, :compensationEC2Region10, 
+                    :compensationEC2Region30, :compensationEC2Region100, :commitmentEC2Instance,
+                    :customerClaimEC2Instance, :compensationEC2Instance10, :compensationEC2Instance30, 
+                    :compensationEC2Instance100 ;
+    tosl:limitationOfLiability :liabilityForceMajeure, :liabilityCustomerOmissionOrTechnology,
+                                :liabilitySuspension, :liabilityNonMeasuredFactors ;
+    odrl:assigner :amazon .
+
+#################################################
+# Parties
+#################################################
+
+:amazon a tosl:Provider ;
+    dcterms:description "Amazon Web Services"^^xsd:string ;
+    foaf:name "Amazon Web Services";
+    foaf:homepage <https://aws.amazon.com/>;
+    odrl:assignerOf :ec2RegionService, :ec2InstanceService .
+
+:customer a tosl:Customer ;
+    dcterms:description "This party represents the consumer in the context of the Amazon EC2 services" .
+
+#################################################
+# Assets description
+#################################################
+
+:ec2RegionService a tosl:Service ;
+    dcterms:description "EC2 instances deployed across multiple AZs within a single region" ;
+    dcterms:rightsHolder :amazon .
+
+:ec2InstanceService a tosl:Service ;
+    dcterms:description "Single Amazon EC2 instance" ;
+    dcterms:rightsHolder :amazon .
+
+#################################################
+# Properties 
+#################################################
+
+:monthlyUptimePercentage a odrl:LeftOperand ;
+    rdfs:label "Monthly Uptime Percentage"@en ;
+    dcterms:description "Monthly Uptime Percentage" ;
+    usdl-agreement:hasMetric :monthlyUptimeMetric .
+
+:monthlyUptimeMetric a usdl-agreement:Metric ;
+    qudt:unit <http://qudt.org/vocab/unit#Percent> ;
+    usdl-agreement:hasExpression "100 - (100 * ?downtimeMinutes / totalMinutes)" ;
+    usdl-agreement:hasMeasuringInterval :monthlyInterval .
+
+:monthlyInterval a time:Interval ;
+    time:hasDurationDescription [
+        a time:DurationDescription ;
+        time:months "1"^^xsd:integer
+    ] .
+
+:serviceCreditPercentage a odrl:LeftOperand ;
+    dcterms:description "Percentage of the net monthly subscription fee applicable to the use of the service and non-refundable as cash."@en .
+
+:unavailabilityDurationPerHour a odrl:LeftOperand ;
+    dcterms:description "Number of minutes a single EC2 instance is unavailable within a clock hour" ;
+    usdl-agreement:hasMetric :unavailabilityDurationPerHourMetric .
+
+:unavailabilityDurationPerHourMetric a usdl-agreement:Metric ;
+    qudt:unit <http://qudt.org/vocab/unit#Percent> ;
+    usdl-agreement:hasMeasuringInterval :monthlyInterval .
+
+
+#################################################
+# Obligations, permission and prohibition 
+#################################################
+
+:claimWindowAfterIncident a time:Interval ;
+    time:hasBeginning :claimStartDate ;
+    time:hasDurationDescription [
+        a time:DurationDescription ;
+        time:months "2"^^xsd:integer
+    ] ;
+    dcterms:description "Two-month window following the incident for submitting SLA credit requests." .
+
+:claimStartDate a time:DateTimeDescription ;
+    dcterms:description "The date immediately after the incident. Must be computed per incident occurrence." ;
+    rdfs:comment "This is a dynamic date that depends on when the outage occurred." .
+
+# Commitment Region-Level SLA
+
+:commitmentEC2Region a odrl:Duty ;
+    dcterms:description "AWS must provide at least 99.99% monthly uptime for Region EC2" ;
+    odrl:assignee :amazon ;
+    odrl:target :ec2RegionService ;
+    odrl:action [
+        a odrl:Action ;
+        rdf:value tosla:guarantee ;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand :monthlyUptimePercentage ;
+            odrl:operator odrl:gteq ;
+            odrl:rightOperand "99.99"^^xsd:decimal
+        ] ;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand odrl:timeInterval;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "P30D"^^xsd:duration
+        ] ;
+    ] ;
+    tosl:liability [ 
+        a tosl:Liability ;
+        dcterms:description "The customer is responsible for monitoring and compiling all information regarding service unavailability in order to claim compensation.";
+        rdf:value tosla:conditionEvaluation ;
+        tosl:liableParty :customer 
+    ] ;
+    tosl:liability [ 
+        a tosl:Liability ;     
+        dcterms:description "The customer is responsible for calculating the total downtime affecting their services, in order to determine whether the guaranteed service levels have been met.";
+        rdf:value tosla:metricComputation;
+        tosl:liableParty :customer 
+    ] ;
+    odrl:consequence :customerClaimEC2Region;
+    odrl:consequence :compensationEC2Region10 ;
+    odrl:consequence :compensationEC2Region30 ;
+    odrl:consequence :compensationEC2Region100 .
+
+:customerClaimEC2Region a odrl:Duty ;
+    dcterms:description "Customer must submit SLA Region credit request" ;
+    odrl:assignee :customer ;
+    odrl:target :ec2RegionService ;
+    odrl:action [
+        a odrl:Action ;
+        rdf:value :claim ;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand odrl:timeInterval ;
+            odrl:operator odrl:within ;
+            odrl:rightOperand :claimWindowAfterIncident
+        ] ;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand odrl:deliveryChannel;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "AWS Support Center"
+        ] ;
+    ] ;
+    odrl:constraint [
+        odrl:leftOperand :monthlyUptimePercentage ;
+        odrl:operator odrl:lt ;
+        odrl:rightOperand "99.99"^^xsd:decimal
+    ] .
+
+:compensationEC2Region10 a odrl:Duty ;
+    dcterms:description "Region compensation if availability <99.99% and ≥99.0%." ;
+    odrl:compensatedParty :customer ;
+    odrl:compensatingParty :amazon ;
+    odrl:assignee :amazon ;
+    odrl:target :ec2RegionService ;
+    odrl:action [
+        a odrl:Action ;
+        rdf:value odrl:compensate ;
+        odrl:refinement [
+            a odrl:Constraint ;
+            odrl:leftOperand :serviceCreditPercentage ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "10"^^xsd:decimal ;
+            qudt:unit <http://qudt.org/vocab/unit#Percent>
+        ] ;
+        odrl:refinement [
+            a odrl:Constraint ;
+            odrl:leftOperand odrl:elapsedTime ;
+            odrl:operator odrl:lteq ;
+            odrl:rightOperand "P1M"^^xsd:duration
+        ]
+    ] ;
+    odrl:constraint [
+        a odrl:LogicalConstraint ;
+        odrl:and (
+            [ 
+                a odrl:Constraint ;
+                odrl:leftOperand :monthlyUptimePercentage ; 
+                odrl:operator odrl:gteq ; 
+                odrl:rightOperand "99.0"^^xsd:decimal 
+            ]
+            [ 
+                a odrl:Constraint ;
+                odrl:leftOperand :monthlyUptimePercentage ;
+                odrl:operator odrl:lt ; 
+                odrl:rightOperand "99.99"^^xsd:decimal 
+            ]
+        )
+    ] .
+
+:compensationEC2Region30 a odrl:Duty ;
+    dcterms:description "Region compensation if availability <99.0% and ≥95.0%." ;
+    odrl:compensatedParty :customer ;
+    odrl:compensatingParty :amazon ;
+    odrl:assignee :amazon ;
+    odrl:target :ec2RegionService ;
+    odrl:action [
+        a odrl:Action ;
+        rdf:value odrl:compensate ;
+        odrl:refinement [
+            odrl:leftOperand :serviceCreditPercentage ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "30"^^xsd:decimal ;
+            qudt:unit <http://qudt.org/vocab/unit#Percent>
+        ] ;
+        odrl:refinement [
+            odrl:leftOperand odrl:elapsedTime ;
+            odrl:operator odrl:lteq ;
+            odrl:rightOperand "P1M"^^xsd:duration
+        ]
+    ] ;
+    odrl:constraint [
+        a odrl:LogicalConstraint ;
+        odrl:and (
+            [ 
+                a odrl:Constraint ;
+                odrl:leftOperand :monthlyUptimePercentage ; 
+                odrl:operator odrl:gteq ; 
+                odrl:rightOperand "95.0"^^xsd:decimal 
+            ]
+            [ 
+                a odrl:Constraint ;
+                odrl:leftOperand :monthlyUptimePercentage ;
+                odrl:operator odrl:lt ; 
+                odrl:rightOperand "99.0"^^xsd:decimal 
+            ]
+        )
+    ] .
+
+:compensationEC2Region100 a odrl:Duty ;
+    dcterms:description "Region compensation if availability <95.0%." ;
+    odrl:compensatedParty :customer ;
+    odrl:compensatingParty :amazon ;
+    odrl:assignee :amazon ;
+    odrl:target :ec2RegionService ;
+    odrl:action [
+        a odrl:Action ;
+        rdf:value odrl:compensate ;
+        odrl:refinement [
+            odrl:leftOperand :serviceCreditPercentage ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "100"^^xsd:decimal ;
+            qudt:unit <http://qudt.org/vocab/unit#Percent>
+        ] ;
+        odrl:refinement [
+            odrl:leftOperand odrl:elapsedTime ;
+            odrl:operator odrl:lteq ;
+            odrl:rightOperand "P1M"^^xsd:duration
+        ]
+    ] ;
+    odrl:constraint [
+        a odrl:Constraint ;
+        odrl:leftOperand :monthlyUptimePercentage ;
+        odrl:operator odrl:lt ; 
+        odrl:rightOperand "99.5"^^xsd:decimal 
+    ] .
+
+# Commitment Instance-Level SLA
+
+:commitmentEC2Instance a odrl:Duty ;
+    dcterms:description "AWS must provide at least 99.5% monthly uptime for single EC2 instance" ;
+    odrl:assignee :amazon ;
+    odrl:target :ec2InstanceService ;
+    odrl:action [
+        a odrl:Action ;
+        rdf:value tosla:guarantee ;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand :monthlyUptimePercentage ;
+            odrl:operator odrl:gteq ;
+            odrl:rightOperand "99.5"^^xsd:decimal
+        ] ;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand odrl:timeInterval;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "P30D"^^xsd:duration
+        ] ; 
+    ] ;
+    tosl:liability [ 
+        a tosl:Liability ;
+        dcterms:description "The customer is responsible for monitoring and compiling all information regarding service unavailability in order to claim compensation.";
+        rdf:value tosla:conditionEvaluation ;
+        tosl:liableParty :customer 
+    ] ;
+    tosl:liability [ 
+        a tosl:Liability ;     
+        dcterms:description "The customer is responsible for calculating the total downtime affecting their services, in order to determine whether the guaranteed service levels have been met.";
+        rdf:value tosla:metricComputation;
+        tosl:liableParty :customer 
+    ] ;
+    odrl:consequence :customerClaimEC2Instance ;
+    odrl:consequence :compensationEC2Instance10 ;
+    odrl:consequence :compensationEC2Instance30 ;
+    odrl:consequence :compensationEC2Instance100 .
+
+
+:customerClaimEC2Instance a odrl:Duty ;
+    dcterms:description "Customer must submit SLA Region credit request" ;
+    odrl:assignee :customer ;
+    odrl:target :ec2RegionService ;
+    odrl:action [
+        a odrl:Action ;
+        rdf:value :claim ;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand odrl:timeInterval ;
+            odrl:operator odrl:within ;
+            odrl:rightOperand :claimWindowAfterIncident
+        ] ;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand odrl:deliveryChannel;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "AWS Support Center"
+        ] ;
+    ] ;
+    odrl:constraint [
+        odrl:leftOperand :monthlyUptimePercentage ;
+        odrl:operator odrl:lt ;
+        odrl:rightOperand "99.5"^^xsd:decimal
+    ] .
+
+:compensationEC2Instance10 a odrl:Duty ;
+    dcterms:description "Instance compensation if availability <99.5% and ≥99.0%." ;
+    odrl:compensatedParty :customer ;
+    odrl:compensatingParty :amazon ;
+    odrl:assignee :amazon ;
+    odrl:target :ec2InstanceService ;
+    odrl:action [
+        a odrl:Action ;
+        rdf:value odrl:compensate ;
+        odrl:refinement [
+            odrl:leftOperand :serviceCreditPercentage ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "10"^^xsd:decimal ;
+            qudt:unit <http://qudt.org/vocab/unit#Percent>
+        ] ;
+        odrl:refinement [
+            odrl:leftOperand odrl:elapsedTime ;
+            odrl:operator odrl:lteq ;
+            odrl:rightOperand "P1M"^^xsd:duration
+        ]
+    ] ;
+    odrl:constraint [
+        a odrl:LogicalConstraint ;
+        odrl:and (
+            [ 
+                a odrl:Constraint ;
+                odrl:leftOperand :monthlyUptimePercentage ; 
+                odrl:operator odrl:gteq ; 
+                odrl:rightOperand "99.0"^^xsd:decimal 
+            ]
+            [ 
+                a odrl:Constraint ;
+                odrl:leftOperand :monthlyUptimePercentage ;
+                odrl:operator odrl:lt ; 
+                odrl:rightOperand "99.5"^^xsd:decimal 
+            ]
+        )
+    ] .
+
+:compensationEC2Instance30 a odrl:Duty ;
+    dcterms:description "Instance compensation if availability <99.0% and ≥95.0%." ;
+    odrl:compensatedParty :customer ;
+    odrl:compensatingParty :amazon ;
+    odrl:assignee :amazon ;
+    odrl:target :ec2InstanceService ;
+    odrl:action [
+        a odrl:Action ;
+        rdf:value odrl:compensate ;
+        odrl:refinement [
+            odrl:leftOperand :serviceCreditPercentage ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "30"^^xsd:decimal ;
+            qudt:unit <http://qudt.org/vocab/unit#Percent>
+        ] ;
+        odrl:refinement [
+            odrl:leftOperand odrl:elapsedTime ;
+            odrl:operator odrl:lteq ;
+            odrl:rightOperand "P1M"^^xsd:duration
+        ]
+    ] ;
+    odrl:constraint [
+        a odrl:LogicalConstraint ;
+        odrl:and (
+            [ 
+                a odrl:Constraint ;
+                odrl:leftOperand :monthlyUptimePercentage ; 
+                odrl:operator odrl:gteq ; 
+                odrl:rightOperand "95.0"^^xsd:decimal 
+            ]
+            [ 
+                a odrl:Constraint ;
+                odrl:leftOperand :monthlyUptimePercentage ;
+                odrl:operator odrl:lt ; 
+                odrl:rightOperand "99.0"^^xsd:decimal 
+            ]
+        )
+    ] .
+
+:compensationEC2Instance100 a odrl:Duty ;
+    dcterms:description "Instance compensation if availability <95.0%." ;
+    odrl:compensatedParty :customer ;
+    odrl:compensatingParty :amazon ;
+    odrl:assignee :amazon ;
+    odrl:target :ec2InstanceService ;
+    odrl:action [
+        a odrl:Action ;
+        rdf:value odrl:compensate ;
+        odrl:refinement [
+            odrl:leftOperand :serviceCreditPercentage ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "100"^^xsd:decimal ;
+            qudt:unit <http://qudt.org/vocab/unit#Percent>
+        ] ;
+        odrl:refinement [
+            odrl:leftOperand odrl:elapsedTime ;
+            odrl:operator odrl:lteq ;
+            odrl:rightOperand "P1M"^^xsd:duration
+        ]
+    ] ;
+    odrl:constraint [
+        a odrl:Constraint ;
+        odrl:leftOperand :monthlyUptimePercentage ;
+        odrl:operator odrl:lt ; 
+        odrl:rightOperand "99.5"^^xsd:decimal 
+    ] .
+
+
+# Credit per instance hour
+
+:commitmentPerInstanceHour a odrl:Duty ;
+    dcterms:description "AWS must ensure that each EC2 instance is unavailable no more than 6 minutes within any given clock hour." ;
+    odrl:assignee :amazon ;
+    odrl:target :ec2InstanceService ;
+    odrl:action [
+        a odrl:Action ;
+        rdf:value tosla:guarantee ;
+        odrl:refinement [
+            a odrl:Constraint ;
+            odrl:leftOperand :unavailabilityDurationPerHour ;
+            odrl:operator odrl:lteq ;
+            odrl:rightOperand "PT6M"^^xsd:duration
+        ] ;
+        odrl:refinement [
+            a odrl:Constraint ;
+            odrl:leftOperand odrl:timeInterval ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "PT1H"^^xsd:duration
+        ] ;
+    ] ;
+    tosl:liability [ 
+        a tosl:Liability ;
+        rdf:value tosla:conditionEvaluation ;
+        tosl:liableParty :amazon ;
+        dcterms:description "The provider is responsible for monitoring the actual uptime of the service."
+    ] ;
+    tosl:liability [ 
+        a tosl:Liability ;     
+        rdf:value tosla:metricComputation ;    
+        tosl:liableParty :amazon ;     
+        dcterms:description "The provider is responsible for calculating the monthly uptime values."
+    ] ;
+    odrl:consequence :compensatePerHour .
+
+:compensatePerHour a odrl:Duty ;
+    dcterms:description "AWS must compensate 100% of the hourly cost for each EC2 instance with more than 6 minutes of downtime in a given clock hour." ;
+    odrl:compensatedParty :customer ;
+    odrl:compensatingParty :amazon ;
+    odrl:assignee :amazon ;
+    odrl:target :ec2InstanceService ;
+    odrl:action [
+        a odrl:Action ;
+        rdf:value odrl:compensate ;
+        odrl:refinement [
+            a odrl:Constraint ;
+            odrl:leftOperand :serviceCreditPercentage ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "100"^^xsd:decimal ;
+            qudt:unit <http://qudt.org/vocab/unit#Percent>
+        ] ;
+        odrl:refinement [
+            a odrl:Constraint ;
+            odrl:leftOperand odrl:timeInterval ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "PT1H"^^xsd:duration
+        ] 
+    ] ;
+    odrl:constraint [
+        a odrl:Constraint ;
+        odrl:leftOperand :unavailabilityPerHour ;
+        odrl:operator odrl:gt ;
+        odrl:rightOperand "PT6M"^^xsd:duration
+    ] .
+
+#################################################
+# Exclusions, limitations of liabilities 
+#################################################
+
+:liabilityForceMajeure a tosl:Liability ;
+    dcterms:description "Unavailability due to force majeure events or factors outside of AWS's reasonable control, including Internet access issues outside the EC2 demarcation point." ;
+    rdf:value tosl:forceMajeure, tosla:networkFailure ;
+    tosl:targetParty :customer ;
+    tosl:liableParty :amazon .
+
+:liabilityCustomerOmissionOrTechnology a tosl:Liability ;
+    dcterms:description "Unavailability due to Customer's actions or omissions, such as failing to acknowledge recovery volumes or respond to resource health issues." ;
+    rdf:value tosl:userContent ;
+    tosl:targetParty :customer ;
+    tosl:liableParty :amazon .
+
+:liabilitySuspension a tosl:Liability ;
+    dcterms:description "Suspension or termination of EC2 service due to breach of AWS terms by the Customer." ;
+    rdf:value tosl:breachOfContract ;
+    tosl:targetParty :customer ;
+    tosl:liableParty :amazon .
+
+:liabilityNonMeasuredFactors a tosl:Liability ;
+    dcterms:description "Other factors affecting availability not used in Monthly Uptime Percentage or Instance Uptime Percentage calculations. Credits may be issued at AWS discretion." ;
+    rdf:value tosl:anyIndirectDamage ;
+    tosl:targetParty :customer ;
+    tosl:liableParty :amazon .

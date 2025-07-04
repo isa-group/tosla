@@ -1,0 +1,15 @@
+PREFIX odrl: <http://www.w3.org/ns/odrl/2/>
+PREFIX tosl: <https://w3id.org/tosl/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+
+SELECT DISTINCT ?agreement ?service ?serviceDescription
+WHERE {
+  ?agreement a odrl:Agreement ;
+             odrl:assigner ?provider .
+  
+  ?provider odrl:assignerOf ?service .
+  
+  ?service a tosl:Service ;
+           dcterms:description ?serviceDescription .
+}

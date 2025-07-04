@@ -1,0 +1,28 @@
+PREFIX odrl: <http://www.w3.org/ns/odrl/2/>
+PREFIX tosl: <https://w3id.org/tosl/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX usdla: <http://www.linked-usdl.org/ns/usdl-agreement#>
+
+SELECT DISTINCT ?service ?commitment ?description ?SLI ?operator ?objectiveValue
+WHERE {
+  ?commitment a odrl:Duty ;
+           odrl:target ?service ;
+           dcterms:description ?description ;
+           odrl:assignee ?provider ;
+           odrl:action ?actionNode .
+
+  ?actionNode rdf:value tosla:guarantee .
+  ?actionNode odrl:refinement ?constraint .
+
+  ?constraint odrl:leftOperand ?leftOperand ;
+              odrl:operator ?operator ;
+              odrl:rightOperand ?objectiveValue .
+
+  ?leftOperand usdla:hasMetric ?metric .
+
+  OPTIONAL {
+    ?leftOperand rdfs:label ?SLI .
+  }
+}
+ORDER BY ?service ?commitment

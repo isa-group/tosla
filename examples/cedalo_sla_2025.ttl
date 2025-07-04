@@ -1,0 +1,1507 @@
+@prefix : <http://example.com/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .   
+@prefix time: <http://www.w3.org/2006/time#> .
+@prefix qudt: <http://qudt.org/schema/qudt#> .
+@prefix usdl-agreement: <http://www.linked-usdl.org/ns/usdl-agreement#> .
+@prefix odrl: <http://www.w3.org/ns/odrl/2/> .
+@prefix tosl: <https://w3id.org/tosl/> .
+@prefix tosla: <https://w3id.org/tosla/> .
+@base <http://example.com> .
+
+#################################################
+# Agreement
+#################################################
+
+:cedaloSLA a odrl:Agreement ;
+    dcterms:title "Cedalo Service Level Agreement (SLA)"^^xsd:string ;
+    dcterms:creator "Cedalo"^^xsd:string ;
+    dcterms:source <https://cedalo.com/service-level-agreement/> ;
+    dcterms:requires <https://cedalo.com/terms-and-conditions/> ; 
+    odrl:permission :permissionMaintenance ;
+    odrl:obligation :commitmentSPlanSingleNode, :customerSPlanSingleNodeClaim, :compensation7_5_SPlanSingleNode,
+                    :compensation15_SPlanSingleNode, :compensation25_SPlanSingleNode, :commitmentSPlanHighAvailability,
+                    :customerSPlanHighAvailability, :compensation7_5_SPlanHighAvailability, :compensation15_SPlanHighAvailability, 
+                    :compensation25_SPlanHighAvailability, :commitmentMPlanSingleNode, :customerMPlanSingleNodeClaim, 
+                    :compensation7_5_MPlanSingleNode, :compensation15_MPlanSingleNode, :compensation25_MPlanSingleNode, 
+                    :commitmentMPlanHighAvailability, :customerMPlanHighAvailabilityClaim, :compensation7_5_MPlanHighAvailability, 
+                    :compensation15_MPlanHighAvailability, :compensation25_MPlanHighAvailability, :commitmentLPlanSingleNode, 
+                    :customerLPlanSingleNodeClaim, :compensation7_5_LPlanSingleNode, :compensation15_LPlanSingleNode, 
+                    :compensation25_LPlanSingleNode, :commitmentLPlanHighAvailability, :customerLPlanHighAvailabilityClaim, 
+                    :compensation7_5_LPlanHighAvailability, :compensation15_LPlanHighAvailability, :compensation25_LPlanHighAvailability,
+                    :commitmentEnterprisePlan, :customerEnterprisePlanClaim, :compensation7_5_EnterprisePlan, :compensation15_EnterprisePlan, 
+                    :compensation25_EnterprisePlan ;  
+    tosl:limitationOfLiability :liabilityCustomerFailure, :liabilitySecurityBreach, :liabilityThirdParty, 
+                    :liabilityBreachContract, :liabilityForceMajeure, :liabilityNetworkInfrastructure, 
+                    :liabilityMaintenanceWindow, :liabilitySelfHosted, :liabilityPaymentDefault ;
+    odrl:assigner :cedalo .
+
+#################################################
+# Parties: S, M, L, Enterprise Customers
+#################################################
+
+:cedalo a tosl:Provider ;
+    foaf:name "Cedalo MQTT Platform" ;
+    foaf:homepage <https://cedalo.com/>;
+    odrl:assignerOf :serviceSPlanSingleNode, :serviceSPlanHighAvailability, :serviceMPlanSingleNode, 
+                    :serviceMPlanHighAvailability, :serviceLPlanSingleNode, :serviceLPlanHighAvailability, 
+                    :serviceEnterprise .
+
+:customerSPlan a tosl:Customer;
+    dcterms:description "This party represents the customer who subscribes to the S plan" .
+
+:customerMPlan a tosl:Customer;
+    dcterms:description "This party represents the customer who subscribes to the M plan" .
+
+:customerLPlan a tosl:Customer;
+    dcterms:description "This party represents the customer who subscribes to the L plan" .
+
+:customerEnterprisePlan a tosl:Customer;
+    dcterms:description "This party represents the customer who subscribes to the Enterprise plan" .
+
+#################################################
+# Assets description
+#################################################
+
+:serviceSPlanSingleNode a tosl:Service ;
+    dcterms:description "Single Node service for Plan S: provides a standalone Pro Mosquitto MQTT broker, ideal for basic IoT deployments." ;
+    dcterms:rightsHolder :cedalo .
+
+:serviceSPlanHighAvailability a tosl:Service ;
+    dcterms:description "High Availability for Plan S: connects and synchronizes multiple instances of Pro Mosquitto MQTT broker, ensuring operational continuity in case of node failure." ;
+    dcterms:rightsHolder :cedalo .
+
+:serviceMPlanSingleNode a tosl:Service ;
+    dcterms:description "Single Node service for Plan M: dedicated Pro Mosquitto MQTT broker for medium-complexity IoT environments." ;
+    dcterms:rightsHolder :cedalo .
+
+:serviceMPlanHighAvailability a tosl:Service ;
+    dcterms:description "High Availability for Plan M: synchronized cluster of Pro Mosquitto MQTT brokers for high availability and fault tolerance." ;
+    dcterms:rightsHolder :cedalo .
+
+:serviceLPlanSingleNode a tosl:Service ;
+    dcterms:description "Single Node service for Plan L: Pro Mosquitto MQTT broker optimized for larger-scale IoT workloads." ;
+    dcterms:rightsHolder :cedalo .
+
+:serviceLPlanHighAvailability a tosl:Service ;
+    dcterms:description "High Availability for Plan L: deployment of multiple synchronized Pro Mosquitto MQTT brokers in a cluster, ensuring uninterrupted service." ;
+    dcterms:rightsHolder :cedalo .
+
+:serviceEnterprise a tosl:Service ;
+    dcterms:description "Enterprise HA Service: Pro Mosquitto MQTT platform with full synchronization of state, configuration, and data between brokers, for maximum reliability and scalability." ;
+    dcterms:rightsHolder :cedalo .
+
+#################################################
+# Properties 
+#################################################
+
+:monthlyUptimePercentage a odrl:LeftOperand ;
+    rdfs:label "Monthly Uptime Percentage"@en ;
+    dcterms:description "The percentage of minutes that the service has been active during a month"@en ;
+    usdl-agreement:hasMetric :monthlyUptimeMetric .
+
+:monthlyUptimeMetric a usdl-agreement:Metric ;
+    qudt:unit <http://qudt.org/vocab/unit#Percent> ;
+    usdl-agreement:hasExpression "100 - (100 * ?inactivityMinutes / 43200)"^^xsd:string ;
+    usdl-agreement:hasMeasuringInterval :monthlyInterval .
+
+:monthlyInterval a time:Interval ;
+    time:hasDurationDescription [
+        a time:DurationDescription ;
+        time:months "1"^^xsd:integer
+    ] . 
+
+:serviceCreditPercentage a odrl:LeftOperand ;
+    dcterms:description "Percentage of the net monthly subscription fee applicable to the use of the service and non-refundable as cash."@en .
+
+
+#################################################
+# Obligations, permission and prohibition 
+#################################################
+
+:claimWindowAfterMonthEnd a time:Interval ;
+    dcterms:description "15-day interval starting on the first day of the month following the incident month" ;
+    time:hasBeginning :computedStartDate ;
+    time:hasDurationDescription [
+        a time:DurationDescription ;
+        time:days "15"^^xsd:integer
+    ] .
+
+:computedStartDate a time:DateTimeDescription ;
+    dcterms:description "First day of the month following the incident. Must be dynamically computed based on the incident date." ;
+    rdfs:comment "This date is not predefined and must be derived programmatically at runtime." .
+
+# Plan S Single Node Obligation
+
+:commitmentSPlanSingleNode a odrl:Duty ;
+    dcterms:description "Cedalo must provide an uptime percentage of at least 97%";
+    odrl:target :serviceSPlanSingleNode ;
+    odrl:assignee :cedalo ;
+    odrl:action [
+        a odrl:Action ;
+        rdf:value tosla:guarantee;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand :monthlyUptimePercentage;
+            odrl:operator odrl:gteq ;
+            odrl:rightOperand "97"^^xsd:decimal
+        ] ;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand odrl:timeInterval;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "P30D"^^xsd:duration
+        ] ; 
+    ] ;
+    tosl:liability [ 
+        a tosl:Liability ;
+        dcterms:description "The customer is responsible for monitoring and compiling all information regarding service unavailability in order to claim compensation.";
+        rdf:value tosla:conditionEvaluation ;
+        tosl:liableParty :customer 
+    ] ;
+    tosl:liability [ 
+        a tosl:Liability ;     
+        dcterms:description "The customer is responsible for calculating the total downtime affecting their services, in order to determine whether the guaranteed service levels have been met.";
+        rdf:value tosla:metricComputation;
+        tosl:liableParty :customer 
+    ] ;
+    odrl:consequence :customerSPlanSingleNodeClaim ;
+    odrl:consequence :compensation7_5_SPlanSingleNode ;
+    odrl:consequence :compensation15_SPlanSingleNode ;
+    odrl:consequence :compensation25_SPlanSingleNode .
+
+# Customer Claim
+:customerSPlanSingleNodeClaim a odrl:Duty ;
+    dcterms:description "Customer must claim service credits in case Cedalo fails to meet the SLO";
+    odrl:assignee :customerSPlan ;
+    odrl:target :serviceSPlanSingleNode ;
+    odrl:action [
+        a odrl:Action ;
+        rdf:value :claim;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand odrl:timeInterval ;
+            odrl:operator odrl:within ;
+            odrl:rightOperand :claimWindowAfterMonthEnd
+        ] ;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand odrl:deliveryChannel;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "mailto:support@cedalo.com"
+        ] ;
+    ] ;
+    odrl:constraint [
+        a odrl:Constraint ;
+        odrl:leftOperand :monthlyUptimePercentage ;
+        odrl:operator odrl:lt ;
+        odrl:rightOperand "97"^^xsd:decimal
+    ] .
+
+# First level of compensation
+:compensation7_5_SPlanSingleNode a odrl:Duty ;
+    dcterms:description "Compensation to the customer for non-compliance";
+    odrl:compensatedParty :customerSPlan ;
+    odrl:compensatingParty :cedalo;
+    odrl:assignee :cedalo ;
+    odrl:target :serviceSPlanSingleNode ;
+    odrl:action [
+        a odrl:Action ;
+        rdf:value odrl:compensate;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand :serviceCreditPercentage;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "7.5"^^xsd:decimal ;
+            qudt:unit <http://qudt.org/vocab/unit#Percent>
+        ];
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand odrl:delayPeriod;
+            odrl:operator odrl:lteq ;
+            odrl:rightOperand "P30D"^^xsd:duration
+        ] ;
+    ] ;
+    odrl:constraint [
+        a odrl:LogicalConstraint ;
+        odrl:and (
+            [
+                a odrl:Constraint ;
+                odrl:leftOperand :monthlyUptimePercentage ;
+                odrl:operator odrl:gteq ;
+                odrl:rightOperand "96"^^xsd:decimal
+            ]
+            [
+                a odrl:Constraint ;
+                odrl:leftOperand :monthlyUptimePercentage ;
+                odrl:operator odrl:lt ;
+                odrl:rightOperand "97"^^xsd:decimal 
+            ]
+        )
+    ] .
+
+# Second level of compensation
+:compensation15_SPlanSingleNode a odrl:Duty ;
+    dcterms:description "Compensation to the customer for non-compliance";
+    odrl:compensatedParty :customerSPlan ;
+    odrl:compensatingParty :cedalo;
+    odrl:assignee :cedalo ;
+    odrl:target :serviceSPlanSingleNode ;
+    odrl:action [
+        a odrl:Action ;
+        rdf:value odrl:compensate;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand :serviceCreditPercentage;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "15"^^xsd:decimal ;
+            qudt:unit <http://qudt.org/vocab/unit#Percent>
+        ] ;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand odrl:delayPeriod;
+            odrl:operator odrl:lteq ;
+            odrl:rightOperand "P30D"^^xsd:duration
+        ] ;
+    ] ;
+    odrl:constraint [
+        a odrl:LogicalConstraint ;
+        odrl:and (
+            [
+                a odrl:Constraint ;
+                odrl:leftOperand :monthlyUptimePercentage ;
+                odrl:operator odrl:gteq ;
+                odrl:rightOperand "87"^^xsd:decimal
+            ]            
+            [
+                a odrl:Constraint ;
+                odrl:leftOperand :monthlyUptimePercentage ;
+                odrl:operator odrl:lt ;
+                odrl:rightOperand "96"^^xsd:decimal
+            ]
+        )
+    ] .
+
+# Third level of compensation
+:compensation25_SPlanSingleNode a odrl:Duty ;
+    dcterms:description "Compensation to the customer for non-compliance";
+    odrl:compensatedParty :customerSPlan ;
+    odrl:compensatingParty :cedalo;
+    odrl:assignee :cedalo ;
+    odrl:target :serviceSPlanSingleNode ;
+    odrl:action [
+        a odrl:Action ;
+        rdf:value odrl:compensate;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand :serviceCreditPercentage;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "25"^^xsd:decimal ;
+            qudt:unit <http://qudt.org/vocab/unit#Percent>
+        ] ;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand odrl:delayPeriod;
+            odrl:operator odrl:lteq ;
+            odrl:rightOperand "P30D"^^xsd:duration
+        ] ;
+    ];
+    odrl:constraint [
+        a odrl:Constraint ;
+        odrl:leftOperand :monthlyUptimePercentage ;
+        odrl:operator odrl:lt ;
+        odrl:rightOperand "87"^^xsd:decimal 
+    ] .
+
+
+# Plan S High Availability Obligation
+
+:commitmentSPlanHighAvailability a odrl:Duty ;
+    dcterms:description "Cedalo must provide an uptime percentage of at least 98.5%";
+    odrl:target :serviceSPlanHighAvailability ;
+    odrl:assignee :cedalo ;
+    odrl:action [
+        a odrl:Action ;
+        rdf:value tosla:guarantee;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand :monthlyUptimePercentage;
+            odrl:operator odrl:gteq ;
+            odrl:rightOperand "98.5"^^xsd:decimal 
+        ] ;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand odrl:timeInterval;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "P30D"^^xsd:duration
+        ]; 
+    ];
+    tosl:liability [ 
+        a tosl:Liability ;
+        dcterms:description "The customer is responsible for monitoring and compiling all information regarding service unavailability in order to claim compensation.";
+        rdf:value tosla:conditionEvaluation ;
+        tosl:liableParty :customer 
+    ] ;
+    tosl:liability [ 
+        a tosl:Liability ;     
+        dcterms:description "The customer is responsible for calculating the total downtime affecting their services, in order to determine whether the guaranteed service levels have been met.";
+        rdf:value tosla:metricComputation;
+        tosl:liableParty :customer 
+    ] ;
+    odrl:consequence :customerSPlanHighAvailabilityClaim ;
+    odrl:consequence :compensation7_5_SPlanHighAvailability ;
+    odrl:consequence :compensation15_SPlanHighAvailability ;
+    odrl:consequence :compensation25_SPlanHighAvailability .
+
+# Customer Claim
+:customerSPlanHighAvailabilityClaim a odrl:Duty ;
+    dcterms:description "Customer must claim service credits in case Cedalo fails to meet the SLO";
+    odrl:assignee :customerSPlan ;
+    odrl:target :serviceSPlanHighAvailability ; 
+    odrl:action [
+        a odrl:Action ;
+        rdf:value :claim;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand odrl:timeInterval ;
+            odrl:operator odrl:within ;
+            odrl:rightOperand :claimWindowAfterMonthEnd
+        ] ;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand odrl:deliveryChannel;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "mailto:support@cedalo.com"
+        ] ;
+    ] ;
+    odrl:constraint [
+        a odrl:Constraint ;
+        odrl:leftOperand :monthlyUptimePercentage ;
+        odrl:operator odrl:lt ;
+        odrl:rightOperand "98.5"^^xsd:decimal 
+    ] .
+
+# First level of compensation
+:compensation7_5_SPlanHighAvailability a odrl:Duty ;
+    dcterms:description "Compensation to the customer for non-compliance";
+    odrl:compensatedParty :customerSPlan ;
+    odrl:compensatingParty :cedalo;
+    odrl:assignee :cedalo ;
+    odrl:target :serviceSPlanHighAvailability ;
+    odrl:action [
+        a odrl:Action ;
+        rdf:value odrl:compensate;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand :serviceCreditPercentage;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "7.5"^^xsd:decimal ;
+            qudt:unit <http://qudt.org/vocab/unit#Percent>
+        ] ; 
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand odrl:delayPeriod;
+            odrl:operator odrl:lteq ;
+            odrl:rightOperand "P30D"^^xsd:duration
+        ] ;
+    ];
+    odrl:constraint [
+        a odrl:LogicalConstraint ;
+        odrl:and (
+            [
+                a odrl:Constraint ;
+                odrl:leftOperand :monthlyUptimePercentage ;
+                odrl:operator odrl:gteq ;
+                odrl:rightOperand "97.5"^^xsd:decimal 
+            ]            
+            [
+                a odrl:Constraint ;
+                odrl:leftOperand :monthlyUptimePercentage ;
+                odrl:operator odrl:lt ;
+                odrl:rightOperand "98.5"^^xsd:decimal 
+            ]
+        )
+    ] .
+
+# Second level of compensation
+:compensation15_SPlanHighAvailability a odrl:Duty ;
+    dcterms:description "Compensation to the customer for non-compliance";
+    odrl:compensatedParty :customerSPlan ;
+    odrl:compensatingParty :cedalo;
+    odrl:assignee :cedalo ;
+    odrl:target :serviceSPlanHighAvailability ;
+    odrl:action [
+        a odrl:Action ;
+        rdf:value odrl:compensate;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand :serviceCreditPercentage;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "15"^^xsd:decimal ;
+            qudt:unit <http://qudt.org/vocab/unit#Percent>
+        ] ; 
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand odrl:delayPeriod;
+            odrl:operator odrl:lteq ;
+            odrl:rightOperand "P30D"^^xsd:duration
+        ] ;
+    ];
+    odrl:constraint [
+        a odrl:LogicalConstraint ;
+        odrl:and (
+            [
+                a odrl:Constraint ;
+                odrl:leftOperand :monthlyUptimePercentage ;
+                odrl:operator odrl:gteq ;
+                odrl:rightOperand "88.5"^^xsd:decimal 
+            ]            
+            [
+                a odrl:Constraint ;
+                odrl:leftOperand :monthlyUptimePercentage ;
+                odrl:operator odrl:lt ;
+                odrl:rightOperand "97.5"^^xsd:decimal 
+            ]
+        )
+    ] .
+
+# Third level of compensation
+:compensation25_SPlanHighAvailability a odrl:Duty ;
+    dcterms:description "Compensation to the customer for non-compliance";
+    odrl:compensatedParty :customerSPlan ;
+    odrl:compensatingParty :cedalo;
+    odrl:assignee :cedalo ;
+    odrl:target :serviceSPlanHighAvailability ;
+    odrl:action [
+        a odrl:Action ;
+        rdf:value odrl:compensate;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand :serviceCreditPercentage;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "25"^^xsd:decimal ;
+            qudt:unit <http://qudt.org/vocab/unit#Percent>
+        ] ;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand odrl:delayPeriod;
+            odrl:operator odrl:lteq ;
+            odrl:rightOperand "P30D"^^xsd:duration
+        ] ;
+    ];
+    odrl:constraint [
+        a odrl:Constraint ;
+        odrl:leftOperand :monthlyUptimePercentage ;
+        odrl:operator odrl:lt ;
+        odrl:rightOperand "88.5"^^xsd:decimal 
+    ] .
+
+
+# Plan M Single Node Obligation
+
+:commitmentMPlanSingleNode a odrl:Duty ;
+    dcterms:description "Cedalo must provide an uptime percentage of at least 98.5%";
+    odrl:target :serviceMPlanSingleNode ;
+    odrl:assignee :cedalo ;
+    odrl:action [
+        a odrl:Action ;
+        rdf:value tosla:guarantee;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand :monthlyUptimePercentage;
+            odrl:operator odrl:gteq ;
+            odrl:rightOperand "98.5"^^xsd:decimal
+        ] ;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand odrl:timeInterval;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "P30D"^^xsd:duration
+        ] ; 
+    ] ;
+    tosl:liability [ 
+        a tosl:Liability ;
+        dcterms:description "The customer is responsible for monitoring and compiling all information regarding service unavailability in order to claim compensation.";
+        rdf:value tosla:conditionEvaluation ;
+        tosl:liableParty :customer 
+    ] ;
+    tosl:liability [ 
+        a tosl:Liability ;     
+        dcterms:description "The customer is responsible for calculating the total downtime affecting their services, in order to determine whether the guaranteed service levels have been met.";
+        rdf:value tosla:metricComputation;
+        tosl:liableParty :customer 
+    ] ;
+    odrl:consequence :customerMPlanSingleNodeClaim ;
+    odrl:consequence :compensation7_5_MPlanSingleNode ;
+    odrl:consequence :compensation15_MPlanSingleNode ;
+    odrl:consequence :compensation25_MPlanSingleNode .
+
+# Customer Claim
+:customerMPlanSingleNodeClaim a odrl:Duty ;
+    dcterms:description "Customer must claim service credits in case Cedalo fails to meet the SLO";
+    odrl:assignee :customerMPlan ;
+    odrl:target :serviceMPlanSingleNode ;
+    odrl:action [
+        a odrl:Action ;
+        rdf:value :claim;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand odrl:timeInterval ;
+            odrl:operator odrl:within ;
+            odrl:rightOperand :claimWindowAfterMonthEnd
+        ] ;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand odrl:deliveryChannel;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "mailto:support@cedalo.com"
+        ] ;
+    ] ;
+    odrl:constraint [
+        a odrl:Constraint ;
+        odrl:leftOperand :monthlyUptimePercentage ;
+        odrl:operator odrl:lt ;
+        odrl:rightOperand "98.5"^^xsd:decimal
+    ] .
+
+# First level of compensation
+:compensation7_5_MPlanSingleNode a odrl:Duty ;
+    dcterms:description "Compensation to the customer for non-compliance";
+    odrl:compensatedParty :customerMPlan ;
+    odrl:compensatingParty :cedalo;
+    odrl:assignee :cedalo ;
+    odrl:target :serviceMPlanSingleNode ;
+    odrl:action [
+        a odrl:Action ;
+        rdf:value odrl:compensate;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand :serviceCreditPercentage;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "7.5"^^xsd:decimal ;
+            qudt:unit <http://qudt.org/vocab/unit#Percent>
+        ];
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand odrl:delayPeriod;
+            odrl:operator odrl:lteq ;
+            odrl:rightOperand "P30D"^^xsd:duration
+        ] ;
+    ] ;
+    odrl:constraint [
+        a odrl:LogicalConstraint ;
+        odrl:and (
+            [
+                a odrl:Constraint ;
+                odrl:leftOperand :monthlyUptimePercentage ;
+                odrl:operator odrl:gteq ;
+                odrl:rightOperand "97.5"^^xsd:decimal
+            ]            
+            [
+                a odrl:Constraint ;
+                odrl:leftOperand :monthlyUptimePercentage ;
+                odrl:operator odrl:lt ;
+                odrl:rightOperand "98.5"^^xsd:decimal 
+            ]
+        )
+    ] .
+
+# Second level of compensation
+:compensation15_MPlanSingleNode a odrl:Duty ;
+    dcterms:description "Compensation to the customer for non-compliance";
+    odrl:compensatedParty :customerMPlan ;
+    odrl:compensatingParty :cedalo;
+    odrl:assignee :cedalo ;
+    odrl:target :serviceMPlanSingleNode ;
+    odrl:action [
+        a odrl:Action ;
+        rdf:value odrl:compensate;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand :serviceCreditPercentage;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "15"^^xsd:decimal ;
+            qudt:unit <http://qudt.org/vocab/unit#Percent>
+        ] ;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand odrl:delayPeriod;
+            odrl:operator odrl:lteq ;
+            odrl:rightOperand "P30D"^^xsd:duration
+        ] ;
+    ] ;
+    odrl:constraint [
+        a odrl:LogicalConstraint ;
+        odrl:and (
+            [
+                a odrl:Constraint ;
+                odrl:leftOperand :monthlyUptimePercentage ;
+                odrl:operator odrl:gteq ;
+                odrl:rightOperand "88.5"^^xsd:decimal
+            ]            
+            [
+                a odrl:Constraint ;
+                odrl:leftOperand :monthlyUptimePercentage ;
+                odrl:operator odrl:lt ;
+                odrl:rightOperand "97.5"^^xsd:decimal
+            ]
+        )
+    ] .
+
+# Third level of compensation
+:compensation25_MPlanSingleNode a odrl:Duty ;
+    dcterms:description "Compensation to the customer for non-compliance";
+    odrl:compensatedParty :customerMPlan ;
+    odrl:compensatingParty :cedalo;
+    odrl:assignee :cedalo ;
+    odrl:target :serviceMPlanSingleNode ;
+    odrl:action [
+        a odrl:Action ;
+        rdf:value odrl:compensate;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand :serviceCreditPercentage;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "25"^^xsd:decimal ;
+            qudt:unit <http://qudt.org/vocab/unit#Percent>
+        ] ;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand odrl:delayPeriod;
+            odrl:operator odrl:lteq ;
+            odrl:rightOperand "P30D"^^xsd:duration
+        ] ;
+    ];
+    odrl:constraint [
+        a odrl:Constraint ;
+        odrl:leftOperand :monthlyUptimePercentage ;
+        odrl:operator odrl:lt ;
+        odrl:rightOperand "88.5"^^xsd:decimal 
+    ] .
+
+
+# Plan M High Availability Obligation
+
+:commitmentMPlanHighAvailability a odrl:Duty ;
+    dcterms:description "Cedalo must provide an uptime percentage of at least 99.5%";
+    odrl:target :serviceMPlanHighAvailability ; 
+    odrl:assignee :cedalo ; 
+    odrl:action [
+        a odrl:Action ;
+        rdf:value tosla:guarantee;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand :monthlyUptimePercentage;
+            odrl:operator odrl:gteq ;
+            odrl:rightOperand "99.5"^^xsd:decimal 
+        ] ;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand odrl:timeInterval;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "P30D"^^xsd:duration
+        ]; 
+    ];
+    tosl:liability [ 
+        a tosl:Liability ;
+        dcterms:description "The customer is responsible for monitoring and compiling all information regarding service unavailability in order to claim compensation.";
+        rdf:value tosla:conditionEvaluation ;
+        tosl:liableParty :customer 
+    ] ;
+    tosl:liability [ 
+        a tosl:Liability ;     
+        dcterms:description "The customer is responsible for calculating the total downtime affecting their services, in order to determine whether the guaranteed service levels have been met.";
+        rdf:value tosla:metricComputation;
+        tosl:liableParty :customer 
+    ] ;
+    odrl:consequence :customerMPlanHighAvailabilityClaim ;
+    odrl:consequence :compensation7_5_MPlanHighAvailability ;
+    odrl:consequence :compensation15_MPlanHighAvailability ;
+    odrl:consequence :compensation25_MPlanHighAvailability .
+
+# Customer Claim
+:customerMPlanHighAvailabilityClaim a odrl:Duty ;
+    dcterms:description "Customer must claim service credits in case Cedalo fails to meet the SLO";
+    odrl:assignee :customerSPlan ;
+    odrl:target :serviceMPlanHighAvailability ; 
+    odrl:action [
+        a odrl:Action ;
+        rdf:value :claim;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand odrl:timeInterval ;
+            odrl:operator odrl:within ;
+            odrl:rightOperand :claimWindowAfterMonthEnd
+        ] ;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand odrl:deliveryChannel;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "mailto:support@cedalo.com"
+        ] ;
+    ] ;
+    odrl:constraint [
+        a odrl:Constraint ;
+        odrl:leftOperand :monthlyUptimePercentage ;
+        odrl:operator odrl:lt ;
+        odrl:rightOperand "99.5"^^xsd:decimal 
+    ] .
+
+# First level of compensation
+:compensation7_5_MPlanHighAvailability a odrl:Duty ;
+    dcterms:description "Compensation to the customer for non-compliance";
+    odrl:compensatedParty :customerMPlan ;
+    odrl:compensatingParty :cedalo;
+    odrl:assignee :cedalo ;
+    odrl:target :serviceMPlanHighAvailability ; 
+    odrl:action [
+        a odrl:Action ;
+        rdf:value odrl:compensate;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand :serviceCreditPercentage;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "7.5"^^xsd:decimal ;
+            qudt:unit <http://qudt.org/vocab/unit#Percent>
+        ] ; 
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand odrl:delayPeriod;
+            odrl:operator odrl:lteq ;
+            odrl:rightOperand "P30D"^^xsd:duration
+        ] ;
+    ];
+    odrl:constraint [
+        a odrl:LogicalConstraint ;
+        odrl:and (
+            [
+                a odrl:Constraint ;
+                odrl:leftOperand :monthlyUptimePercentage ;
+                odrl:operator odrl:gteq ;
+                odrl:rightOperand "98.5"^^xsd:decimal 
+            ]            
+            [
+                a odrl:Constraint ;
+                odrl:leftOperand :monthlyUptimePercentage ;
+                odrl:operator odrl:lt ;
+                odrl:rightOperand "99.5"^^xsd:decimal 
+            ]
+        )
+    ] .
+
+# Second level of compensation
+:compensation15_MPlanHighAvailability a odrl:Duty ;
+    dcterms:description "Compensation to the customer for non-compliance";
+    odrl:compensatedParty :customerMPlan ;
+    odrl:compensatingParty :cedalo;
+    odrl:assignee :cedalo ;
+    odrl:target :serviceMPlanHighAvailability ; 
+    odrl:action [
+        a odrl:Action ;
+        rdf:value odrl:compensate;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand :serviceCreditPercentage;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "15"^^xsd:decimal ;
+            qudt:unit <http://qudt.org/vocab/unit#Percent>
+        ] ; 
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand odrl:delayPeriod;
+            odrl:operator odrl:lteq ;
+            odrl:rightOperand "P30D"^^xsd:duration
+        ] ;
+    ];
+    odrl:constraint [
+        a odrl:LogicalConstraint ;
+        odrl:and (
+            [
+                a odrl:Constraint ;
+                odrl:leftOperand :monthlyUptimePercentage ;
+                odrl:operator odrl:gteq ;
+                odrl:rightOperand "89.5"^^xsd:decimal 
+            ]
+            [
+                a odrl:Constraint ;
+                odrl:leftOperand :monthlyUptimePercentage ;
+                odrl:operator odrl:lt ;
+                odrl:rightOperand "98.5"^^xsd:decimal 
+            ]
+        )
+    ] .
+
+# Third level of compensation
+:compensation25_MPlanHighAvailability a odrl:Duty ;
+    dcterms:description "Compensation to the customer for non-compliance";
+    odrl:compensatedParty :customerMPlan ;
+    odrl:compensatingParty :cedalo;
+    odrl:assignee :cedalo ;
+    odrl:target :serviceMPlanHighAvailability ; 
+    odrl:action [
+        a odrl:Action ;
+        rdf:value odrl:compensate;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand :serviceCreditPercentage;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "25"^^xsd:decimal ;
+            qudt:unit <http://qudt.org/vocab/unit#Percent>
+        ] ;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand odrl:delayPeriod;
+            odrl:operator odrl:lteq ;
+            odrl:rightOperand "P30D"^^xsd:duration
+        ] ;
+    ];
+    odrl:constraint [
+        a odrl:Constraint ;
+        odrl:leftOperand :monthlyUptimePercentage ;
+        odrl:operator odrl:lt ;
+        odrl:rightOperand "89.5"^^xsd:decimal 
+    ] .
+
+
+
+# Plan L Single Node Obligation
+
+:commitmentLPlanSingleNode a odrl:Duty ;
+    dcterms:description "Cedalo must provide an uptime percentage of at least 98.9%";
+    odrl:target :serviceLPlanSingleNode ; 
+    odrl:assignee :cedalo ;
+    odrl:action [
+        a odrl:Action ;
+        rdf:value tosla:guarantee;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand :monthlyUptimePercentage;
+            odrl:operator odrl:gteq ;
+            odrl:rightOperand "98.9"^^xsd:decimal
+        ] ;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand odrl:timeInterval;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "P30D"^^xsd:duration
+        ] ; 
+    ] ;
+    tosl:liability [ 
+        a tosl:Liability ;
+        dcterms:description "The customer is responsible for monitoring and compiling all information regarding service unavailability in order to claim compensation.";
+        rdf:value tosla:conditionEvaluation ;
+        tosl:liableParty :customer 
+    ] ;
+    tosl:liability [ 
+        a tosl:Liability ;     
+        dcterms:description "The customer is responsible for calculating the total downtime affecting their services, in order to determine whether the guaranteed service levels have been met.";
+        rdf:value tosla:metricComputation;
+        tosl:liableParty :customer 
+    ] ;
+    odrl:consequence :customerLPlanSingleNodeClaim ;
+    odrl:consequence :compensation7_5_LPlanSingleNode ;
+    odrl:consequence :compensation15_LPlanSingleNode ;
+    odrl:consequence :compensation25_LPlanSingleNode .
+
+# Customer Claim
+:customerLPlanSingleNodeClaim a odrl:Duty ;
+    dcterms:description "Customer must claim service credits in case Cedalo fails to meet the SLO";
+    odrl:assignee :customerLPlan ;
+    odrl:target :serviceLPlanSingleNode ;
+    odrl:action [
+        a odrl:Action ;
+        rdf:value :claim;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand odrl:timeInterval ;
+            odrl:operator odrl:within ;
+            odrl:rightOperand :claimWindowAfterMonthEnd
+        ] ;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand odrl:deliveryChannel;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "mailto:support@cedalo.com"
+        ] ;
+    ] ;
+    odrl:constraint [
+        a odrl:Constraint ;
+        odrl:leftOperand :monthlyUptimePercentage ;
+        odrl:operator odrl:lt ;
+        odrl:rightOperand "98.9"^^xsd:decimal
+    ] .
+
+# First level of compensation
+:compensation7_5_LPlanSingleNode a odrl:Duty ;
+    dcterms:description "Compensation to the customer for non-compliance";
+    odrl:compensatedParty :customerLPlan ;
+    odrl:compensatingParty :cedalo;
+    odrl:assignee :cedalo ;
+    odrl:target :serviceLPlanSingleNode ; 
+    odrl:action [
+        a odrl:Action ;
+        rdf:value odrl:compensate;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand :serviceCreditPercentage;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "7.5"^^xsd:decimal ;
+            qudt:unit <http://qudt.org/vocab/unit#Percent>
+        ];
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand odrl:delayPeriod;
+            odrl:operator odrl:lteq ;
+            odrl:rightOperand "P30D"^^xsd:duration
+        ] ;
+    ] ;
+    odrl:constraint [
+        a odrl:LogicalConstraint ;
+        odrl:and (
+            [
+                a odrl:Constraint ;
+                odrl:leftOperand :monthlyUptimePercentage ;
+                odrl:operator odrl:gteq ;
+                odrl:rightOperand "97.9"^^xsd:decimal
+            ]            
+            [
+                a odrl:Constraint ;
+                odrl:leftOperand :monthlyUptimePercentage ;
+                odrl:operator odrl:lt ;
+                odrl:rightOperand "98.9"^^xsd:decimal 
+            ]
+        )
+    ] .
+
+# Second level of compensation
+:compensation15_LPlanSingleNode a odrl:Duty ;
+    dcterms:description "Compensation to the customer for non-compliance";
+    odrl:compensatedParty :customerLPlan ;
+    odrl:compensatingParty :cedalo;
+    odrl:assignee :cedalo ;
+    odrl:target :serviceLPlanSingleNode ; 
+    odrl:action [
+        a odrl:Action ;
+        rdf:value odrl:compensate;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand :serviceCreditPercentage;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "15"^^xsd:decimal ;
+            qudt:unit <http://qudt.org/vocab/unit#Percent>
+        ] ;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand odrl:delayPeriod;
+            odrl:operator odrl:lteq ;
+            odrl:rightOperand "P30D"^^xsd:duration
+        ] ;
+    ] ;
+    odrl:constraint [
+        a odrl:LogicalConstraint ;
+        odrl:and (
+            [
+                a odrl:Constraint ;
+                odrl:leftOperand :monthlyUptimePercentage ;
+                odrl:operator odrl:gteq ;
+                odrl:rightOperand "88.9"^^xsd:decimal
+            ]
+            [
+                a odrl:Constraint ;
+                odrl:leftOperand :monthlyUptimePercentage ;
+                odrl:operator odrl:lt ;
+                odrl:rightOperand "97.9"^^xsd:decimal
+            ]
+        )
+    ] .
+
+# Third level of compensation
+:compensation25_LPlanSingleNode a odrl:Duty ;
+    dcterms:description "Compensation to the customer for non-compliance";
+    odrl:compensatedParty :customerLPlan ;
+    odrl:compensatingParty :cedalo;
+    odrl:assignee :cedalo ;
+    odrl:target :serviceLPlanSingleNode ; 
+    odrl:action [
+        a odrl:Action ;
+        rdf:value odrl:compensate;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand :serviceCreditPercentage;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "25"^^xsd:decimal ;
+            qudt:unit <http://qudt.org/vocab/unit#Percent>
+        ] ;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand odrl:delayPeriod;
+            odrl:operator odrl:lteq ;
+            odrl:rightOperand "P30D"^^xsd:duration
+        ] ;
+    ];
+    odrl:constraint [
+        a odrl:Constraint ;
+        odrl:leftOperand :monthlyUptimePercentage ;
+        odrl:operator odrl:lt ;
+        odrl:rightOperand "88.9"^^xsd:decimal 
+    ] .
+
+
+# Plan L High Availability Obligation
+
+:commitmentLPlanHighAvailability a odrl:Duty ;
+    dcterms:description "Cedalo must provide an uptime percentage of at least 99.9%";
+    odrl:target :serviceLPlanHighAvailability ;
+    odrl:assignee :cedalo ;
+    odrl:action [
+        a odrl:Action ;
+        rdf:value tosla:guarantee;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand :monthlyUptimePercentage;
+            odrl:operator odrl:gteq ;
+            odrl:rightOperand "99.9"^^xsd:decimal 
+        ] ;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand odrl:timeInterval;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "P30D"^^xsd:duration
+        ]; 
+    ];
+    tosl:liability [ 
+        a tosl:Liability ;
+        dcterms:description "The customer is responsible for monitoring and compiling all information regarding service unavailability in order to claim compensation.";
+        rdf:value tosla:conditionEvaluation ;
+        tosl:liableParty :customer 
+    ] ;
+    tosl:liability [ 
+        a tosl:Liability ;     
+        dcterms:description "The customer is responsible for calculating the total downtime affecting their services, in order to determine whether the guaranteed service levels have been met.";
+        rdf:value tosla:metricComputation;
+        tosl:liableParty :customer 
+    ] ;
+    odrl:consequence :customerLPlanHighAvailabilityClaim ;
+    odrl:consequence :compensation7_5_LPlanHighAvailability ;
+    odrl:consequence :compensation15_LPlanHighAvailability ;
+    odrl:consequence :compensation25_LPlanHighAvailability .
+
+# Customer Claim
+:customerLPlanHighAvailabilityClaim a odrl:Duty ;
+    dcterms:description "Customer must claim service credits in case Cedalo fails to meet the SLO";
+    odrl:assignee :customerLPlan ;
+    odrl:target :serviceLPlanHighAvailability ; 
+    odrl:action [
+        a odrl:Action ;
+        rdf:value :claim;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand odrl:timeInterval ;
+            odrl:operator odrl:within ;
+            odrl:rightOperand :claimWindowAfterMonthEnd
+        ] ;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand odrl:deliveryChannel;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "mailto:support@cedalo.com"
+        ] ;
+    ] ;
+    odrl:constraint [
+        a odrl:Constraint ;
+        odrl:leftOperand :monthlyUptimePercentage ;
+        odrl:operator odrl:lt ;
+        odrl:rightOperand "99.9"^^xsd:decimal 
+    ] .
+
+# First level of compensation
+:compensation7_5_LPlanHighAvailability a odrl:Duty ;
+    dcterms:description "Compensation to the customer for non-compliance";
+    odrl:compensatedParty :customerLPlan ;
+    odrl:compensatingParty :cedalo;
+    odrl:assignee :cedalo ;
+    odrl:target :serviceLPlanHighAvailability ;
+    odrl:action [
+        a odrl:Action ;
+        rdf:value odrl:compensate;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand :serviceCreditPercentage;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "7.5"^^xsd:decimal ;
+            qudt:unit <http://qudt.org/vocab/unit#Percent>
+        ] ; 
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand odrl:delayPeriod;
+            odrl:operator odrl:lteq ;
+            odrl:rightOperand "P30D"^^xsd:duration
+        ] ;
+    ];
+    odrl:constraint [
+        a odrl:LogicalConstraint ;
+        odrl:and (
+            [
+                a odrl:Constraint ;
+                odrl:leftOperand :monthlyUptimePercentage ;
+                odrl:operator odrl:gteq ;
+                odrl:rightOperand "98.9"^^xsd:decimal 
+            ]
+            [
+                a odrl:Constraint ;
+                odrl:leftOperand :monthlyUptimePercentage ;
+                odrl:operator odrl:lt ;
+                odrl:rightOperand "99.9"^^xsd:decimal 
+            ]
+        )
+    ] .
+
+# Second level of compensation
+:compensation15_LPlanHighAvailability a odrl:Duty ;
+    dcterms:description "Compensation to the customer for non-compliance";
+    odrl:compensatedParty :customerLPlan ;
+    odrl:compensatingParty :cedalo;
+    odrl:assignee :cedalo ;
+    odrl:target :serviceLPlanHighAvailability ;
+    odrl:action [
+        a odrl:Action ;
+        rdf:value odrl:compensate;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand :serviceCreditPercentage;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "15"^^xsd:decimal ;
+            qudt:unit <http://qudt.org/vocab/unit#Percent>
+        ] ; 
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand odrl:delayPeriod;
+            odrl:operator odrl:lteq ;
+            odrl:rightOperand "P30D"^^xsd:duration
+        ] ;
+    ];
+    odrl:constraint [
+        a odrl:LogicalConstraint ;
+        odrl:and (
+            [
+                a odrl:Constraint ;
+                odrl:leftOperand :monthlyUptimePercentage ;
+                odrl:operator odrl:gteq ;
+                odrl:rightOperand "89.9"^^xsd:decimal 
+            ]            
+            [
+                a odrl:Constraint ;
+                odrl:leftOperand :monthlyUptimePercentage ;
+                odrl:operator odrl:lt ;
+                odrl:rightOperand "98.9"^^xsd:decimal 
+            ]
+        )
+    ] .
+
+# Third level of compensation
+:compensation25_LPlanHighAvailability a odrl:Duty ;
+    dcterms:description "Compensation to the customer for non-compliance";
+    odrl:compensatedParty :customerLPlan ;
+    odrl:compensatingParty :cedalo;
+    odrl:assignee :cedalo ;
+    odrl:target :serviceLPlanHighAvailability ;
+    odrl:action [
+        a odrl:Action ;
+        rdf:value odrl:compensate;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand :serviceCreditPercentage;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "25"^^xsd:decimal ;
+            qudt:unit <http://qudt.org/vocab/unit#Percent>
+        ] ;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand odrl:delayPeriod;
+            odrl:operator odrl:lteq ;
+            odrl:rightOperand "P30D"^^xsd:duration
+        ] ;
+    ];
+    odrl:constraint [
+        a odrl:Constraint ;
+        odrl:leftOperand :monthlyUptimePercentage ;
+        odrl:operator odrl:lt ;
+        odrl:rightOperand "89.9"^^xsd:decimal 
+    ] .
+
+
+# Plan Enterprise Obligation
+
+:commitmentEnterprisePlan a odrl:Duty ;
+    dcterms:description "Cedalo must provide an uptime percentage of at least 99.9%";
+    odrl:target :serviceEnterprisePlan ;
+    odrl:assignee :cedalo ;
+    odrl:action [
+        a odrl:Action ;
+        rdf:value tosla:guarantee;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand :monthlyUptimePercentage;
+            odrl:operator odrl:gteq ;
+            odrl:rightOperand "99.9"^^xsd:decimal 
+        ] ;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand odrl:timeInterval;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "P30D"^^xsd:duration
+        ]; 
+    ];
+    tosl:liability [ 
+        a tosl:Liability ;
+        dcterms:description "The customer is responsible for monitoring and compiling all information regarding service unavailability in order to claim compensation.";
+        rdf:value tosla:conditionEvaluation ;
+        tosl:liableParty :customer 
+    ] ;
+    tosl:liability [ 
+        a tosl:Liability ;     
+        dcterms:description "The customer is responsible for calculating the total downtime affecting their services, in order to determine whether the guaranteed service levels have been met.";
+        rdf:value tosla:metricComputation;
+        tosl:liableParty :customer 
+    ] ;
+    odrl:consequence :customerEnterprisePlanClaim ;
+    odrl:consequence :compensation7_5_EnterprisePlan ;
+    odrl:consequence :compensation15_EnterprisePlan ;
+    odrl:consequence :compensation25_EnterprisePlan .
+
+# Customer Claim
+:customerEnterprisePlanClaim a odrl:Duty ;
+    dcterms:description "Customer must claim service credits in case Cedalo fails to meet the SLO";
+    odrl:assignee :customerEnterprisePlan ;
+    odrl:target :serviceEnterprisePlan ; 
+    odrl:action [
+        a odrl:Action ;
+        rdf:value :claim;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand odrl:timeInterval ;
+            odrl:operator odrl:within ;
+            odrl:rightOperand :claimWindowAfterMonthEnd
+        ] ;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand odrl:deliveryChannel;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "mailto:support@cedalo.com"
+        ] ;
+    ] ;
+    odrl:constraint [
+        a odrl:Constraint ;
+        odrl:leftOperand :monthlyUptimePercentage ;
+        odrl:operator odrl:lt ;
+        odrl:rightOperand "99.99"^^xsd:decimal 
+    ] .
+
+# First level of compensation
+:compensation7_5_EnterprisePlan a odrl:Duty ;
+    dcterms:description "Compensation to the customer for non-compliance";
+    odrl:compensatedParty :customerEnterprisePlan ;
+    odrl:compensatingParty :cedalo;
+    odrl:assignee :cedalo ;
+    odrl:target :serviceEnterprisePlan ;
+    odrl:action [
+        a odrl:Action ;
+        rdf:value odrl:compensate;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand :serviceCreditPercentage;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "7.5"^^xsd:decimal ;
+            qudt:unit <http://qudt.org/vocab/unit#Percent>
+        ] ; 
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand odrl:delayPeriod;
+            odrl:operator odrl:lteq ;
+            odrl:rightOperand "P30D"^^xsd:duration
+        ] ;
+    ];
+    odrl:constraint [
+        a odrl:LogicalConstraint ;
+        odrl:and (
+            [
+                a odrl:Constraint ;
+                odrl:leftOperand :monthlyUptimePercentage ;
+                odrl:operator odrl:gteq ;
+                odrl:rightOperand "98.99"^^xsd:decimal 
+            ]
+            [
+                a odrl:Constraint ;
+                odrl:leftOperand :monthlyUptimePercentage ;
+                odrl:operator odrl:lt ;
+                odrl:rightOperand "99.99"^^xsd:decimal 
+            ]
+        )
+    ] .
+
+# Second level of compensation
+:compensation15_EnterprisePlan a odrl:Duty ;
+    dcterms:description "Compensation to the customer for non-compliance";
+    odrl:compensatedParty :customerEnterprisePlan ;
+    odrl:compensatingParty :cedalo;
+    odrl:assignee :cedalo ;
+    odrl:target :serviceEnterprisePlan ;
+    odrl:action [
+        a odrl:Action ;
+        rdf:value odrl:compensate;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand :serviceCreditPercentage;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "15"^^xsd:decimal ;
+            qudt:unit <http://qudt.org/vocab/unit#Percent>
+        ] ; 
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand odrl:delayPeriod;
+            odrl:operator odrl:lteq ;
+            odrl:rightOperand "P30D"^^xsd:duration
+        ] ;
+    ];
+    odrl:constraint [
+        a odrl:LogicalConstraint ;
+        odrl:and (
+            [
+                a odrl:Constraint ;
+                odrl:leftOperand :monthlyUptimePercentage ;
+                odrl:operator odrl:gteq ;
+                odrl:rightOperand "89.99"^^xsd:decimal 
+            ]            
+            [
+                a odrl:Constraint ;
+                odrl:leftOperand :monthlyUptimePercentage ;
+                odrl:operator odrl:lt ;
+                odrl:rightOperand "98.99"^^xsd:decimal 
+            ]
+
+        )
+    ] .
+
+# Third level of compensation
+:compensation25_EnterprisePlan a odrl:Duty ;
+    dcterms:description "Compensation Enterprise for non-compliance monthly uptime percentage 89.99";
+    odrl:compensatedParty :customerEnterprisePlan ;
+    odrl:compensatingParty :cedalo;
+    odrl:assignee :cedalo ;
+    odrl:target :serviceEnterprisePlan ;
+    odrl:action [
+        a odrl:Action ;
+        rdf:value odrl:compensate;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand :serviceCreditPercentage;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "25"^^xsd:decimal ;
+            qudt:unit <http://qudt.org/vocab/unit#Percent>
+        ] ;
+        odrl:refinement [
+            a odrl:Constraint;
+            odrl:leftOperand odrl:delayPeriod;
+            odrl:operator odrl:lteq ;
+            odrl:rightOperand "P30D"^^xsd:duration
+        ] ;
+    ];
+    odrl:constraint [
+        a odrl:Constraint ;
+        odrl:leftOperand :monthlyUptimePercentage ;
+        odrl:operator odrl:lt ;
+        odrl:rightOperand "89.99"^^xsd:decimal 
+    ] .
+
+
+# Permission of maintenance
+
+:permissionMaintenance a odrl:Permission ;
+    dcterms:description "Cedalo may perform maintenance if it gives 3 days’ notice" ;
+    odrl:action :performMaintenance ;
+    odrl:target :serviceSPlanSingleNode, :serviceSPlanHighAvailability, :serviceMPlanSingleNode, :serviceMPlanHighAvailability, :serviceLPlanSingleNode, :serviceLPlanHighAvailability, :serviceEnterprise ;
+    odrl:assignee :cedalo ;
+    odrl:duty :serviceChangeNotification .
+
+:serviceChangeNotification a odrl:Duty ;
+    odrl:action odrl:inform ;
+    odrl:assignee :cedalo ;
+    odrl:target :serviceSPlanSingleNode, :serviceSPlanHighAvailability, :serviceMPlanSingleNode, :serviceMPlanHighAvailability, :serviceLPlanSingleNode, :serviceLPlanHighAvailability, :serviceEnterprise ;
+    odrl:informedParty :customerSPlan, :customerMPlan, :customerLPlan, :customerEnterprisePlan ;
+    odrl:constraint [
+        odrl:leftOperand :noticePeriod ;
+        odrl:operator odrl:gteq ;
+        odrl:rightOperand "P3D"^^xsd:duration
+    ] .
+
+
+#################################################
+# Exclusions, limitations of liabilities 
+#################################################
+
+:liabilityCustomerFailure a tosl:Liability ;
+    dcterms:description "Service interruptions due to Customer’s failure to perform required corrective actions or provide necessary information." ;
+    rdf:value tosl:userContent ;
+    tosl:targetParty :customerSPlan, :customerMPlan, :customerLPlan, :customerEnterprisePlan ;
+    tosl:liableParty :cedalo .
+
+:liabilitySecurityBreach a tosl:Liability ;
+    dcterms:description "Unavailability caused by unlawful or non-compliant actions of the Customer or misuse of access credentials." ;
+    rdf:value tosl:securityBreach ;
+    tosl:targetParty :customerSPlan, :customerMPlan, :customerLPlan, :customerEnterprisePlan ;
+    tosl:liableParty :cedalo .
+
+:liabilityThirdParty a tosl:Liability ;
+    dcterms:description "Issues from third-party services, hardware, or software beyond Cedalo’s control." ;
+    rdf:value tosl:thirdParty ;
+    tosl:targetParty :customerSPlan, :customerMPlan, :customerLPlan, :customerEnterprisePlan ;
+    tosl:liableParty :cedalo .
+
+:liabilityBreachContract a tosl:Liability ;
+    dcterms:description "Situations where Cedalo suspends access due to violations of the Customer’s obligations." ;
+    rdf:value tosl:breachOfContract ;
+    tosl:targetParty :customerSPlan, :customerMPlan, :customerLPlan, :customerEnterprisePlan ;
+    tosl:liableParty :cedalo .
+
+:liabilityForceMajeure a tosl:Liability ;
+    dcterms:description "Unavailability due to force majeure, DDoS attacks, or similar events beyond Cedalo’s control." ;
+    rdf:value tosl:anyIndirectDamage, tosl:harmCausedByMalware ;
+    tosl:targetParty :customerSPlan, :customerMPlan, :customerLPlan, :customerEnterprisePlan ;
+    tosl:liableParty :cedalo .
+
+:liabilityNetworkInfrastructure a tosl:Liability ;
+    dcterms:description "Interruptions in public networks or Internet infrastructure that prevent access to SaaS services." ;
+    rdf:value tosla:networkFailure ;
+    tosl:targetParty :customerSPlan, :customerMPlan, :customerLPlan, :customerEnterprisePlan ;
+    tosl:liableParty :cedalo .
+
+:liabilityMaintenanceWindow a tosl:Liability ;
+    dcterms:description "Planned maintenance windows up to 4 hours per month" ;
+    rdf:value tosla:scheduledMaintenance ;
+    tosl:targetParty :customerSPlan, :customerMPlan, :customerLPlan, :customerEnterprisePlan ;
+    tosl:liableParty :cedalo ;
+    tosl:limitation [
+        a odrl:constraint ;
+        dcterms:description "Maximum of 4 hours of maintenance allowed per full calendar month." ;
+        odrl:leftOperand :elapsedTime ;
+        odrl:operator odrl:lteq ;
+        odrl:rightOperand "PT4H"^^xsd:duration ;
+    ] .
+
+:liabilitySelfHosted a tosl:Liability ;
+    dcterms:description "Exclusion applies if Cedalo Cloud is not hosted by Cedalo. SLA does not apply in such cases." ;
+    rdf:value tosla:selfHosting ;
+    tosl:targetParty :customerSelfHosted ;
+    tosl:liableParty :none .
+
+:liabilityPaymentDefault a tosl:Liability ;
+    dcterms:description "Customers in default of payment are not eligible to claim service credits." ;
+    rdf:value tosla:paymentOverdue ;
+    tosl:targetParty :customerSPlan, :customerMPlan, :customerLPlan, :customerEnterprisePlan ;
+    tosl:liableParty :cedalo .

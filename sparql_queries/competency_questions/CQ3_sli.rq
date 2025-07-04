@@ -1,0 +1,21 @@
+PREFIX odrl: <http://www.w3.org/ns/odrl/2/>
+PREFIX tosl: <https://w3id.org/tosl/>
+PREFIX usdla: <http://www.linked-usdl.org/ns/usdl-agreement#>
+
+SELECT DISTINCT ?service ?SLI
+WHERE {
+  ?duty a odrl:Duty ;
+        odrl:target ?service ;
+        odrl:assignee ?provider ;
+        odrl:action ?actionNode .
+
+  ?actionNode rdf:value tosla:guarantee .
+  ?actionNode odrl:refinement ?constraint .
+
+  ?constraint odrl:leftOperand ?sli ;
+              odrl:operator ?operator ;
+              odrl:rightOperand ?SLO .
+
+  ?sli usdla:hasMetric ?SLI .
+}
+ORDER BY ?service ?SLI
