@@ -1,0 +1,28 @@
+PREFIX odrl: <http://www.w3.org/ns/odrl/2/>
+PREFIX tosl: <https://w3id.org/tosl/>
+PREFIX dcterms: <http://purl.org/dc/terms/> 
+
+
+SELECT ?permission ?description ?action ?assignee ?target
+WHERE {
+    ?permission a odrl:Permission ;
+        dcterms:description ?description ;
+               odrl:action ?action ;
+               odrl:assignee ?assignee ;
+               odrl:target ?target .
+
+    ?assignee a tosl:Provider .
+
+    FILTER (?action = tosl:terminate || ?action = tosl:suspend || ?action = tosl:disable)
+
+    OPTIONAL {
+        ?permission odrl:constraint ?constraint .
+        ?constraint odrl:leftOperand tosl:justification
+    }
+    OPTIONAL {
+        ?permission odrl:duty ?duty .
+        ?duty odrl:action odrl:inform .
+    }
+
+    FILTER (!BOUND(?constraint) || !BOUND(?duty))
+}

@@ -1,0 +1,17 @@
+PREFIX odrl: <http://www.w3.org/ns/odrl/2/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX tosl: <https://w3id.org/tosl/>
+
+SELECT DISTINCT ?arbitration (COUNT(?litigation) AS ?litigationCount)
+WHERE {
+
+  ?arbitration a tosl:Arbitration .
+  
+  OPTIONAL {
+    ?litigation a tosl:Litigation .
+    ?litigation tosl:requires ?arbitration .
+  }
+
+}
+GROUP BY ?arbitration
+HAVING (SUM(IF(BOUND(?litigation), 1, 0)) = COUNT(?litigation))

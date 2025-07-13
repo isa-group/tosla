@@ -1,0 +1,37 @@
+PREFIX odrl: <http://www.w3.org/ns/odrl/2/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX tosl: <https://w3id.org/tosl/>
+
+SELECT DISTINCT ?liability ?description ?limitationOn ?type ?liableParty
+WHERE {
+  ?liability a tosl:Liability ;
+    dcterms:description ?description ;
+    tosl:liableParty ?liableParty ;
+    tosl:targetParty ?targetParty ;
+    rdf:value ?type .
+
+  ?targetParty a tosl:Customer .
+  
+  ?liableParty a tosl:Provider .
+  
+  {
+    ?limitationOn tosl:limitationOfLiability ?liability .
+  } UNION {
+    ?limitationOn tosl:liability ?liability .
+    ?liability odrl:limitation ?constraint .  
+  }
+
+  FILTER (?type IN (
+    tosl:anyLiability,
+    tosl:physicalInjuries,
+    tosl:harmCausedByMalware,
+    tosl:discontinuity,
+    tosl:anyIndirectDamage,
+    tosl:directDamage,
+    tosl:anyLoss,
+    tosl:thirdparty,
+    tosl:serviceContent,
+    tosl:breachOfContract,
+    tosl:legalCompliance
+  ))
+}

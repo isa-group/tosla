@@ -1,0 +1,19 @@
+PREFIX odrl: <http://www.w3.org/ns/odrl/2/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX tosl: <https://w3id.org/tosl/>
+
+SELECT DISTINCT ?dispute ?litigation ?law
+WHERE {
+  ?dispute tosl:onDispute ?litigation .
+  ?litigation a tosl:Litigation ;
+              tosl:governedBy ?law .
+  
+  FILTER NOT EXISTS {
+    ?litigation tosl:governedBy tosl:consumerPlaceLaw .
+  }
+
+  FILTER NOT EXISTS {
+    ?litigation tosl:targetParty ?party .
+    ?party a tosl:BusinessCustomer .
+  }
+}

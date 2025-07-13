@@ -1,0 +1,16 @@
+PREFIX odrl: <http://www.w3.org/ns/odrl/2/>
+PREFIX tosl: <https://w3id.org/tosl/>
+
+SELECT ?duty ?action ?assignee ?target
+WHERE {
+    ?duty a odrl:Duty ;
+          odrl:action ?action ;
+          odrl:assignee ?assignee ;
+          odrl:target ?target ;
+          odrl:constraint ?constraint .
+
+    ?assignee a tosl:Customer .
+    ?constraint odrl:rightOperand tosl:implicitConsent .
+
+    FILTER (?action = tosl:consent)
+}
