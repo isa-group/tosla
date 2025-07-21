@@ -1,0 +1,964 @@
+@prefix : <http://example.com/> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix odrl: <http://www.w3.org/ns/odrl/2/> .
+@prefix tosl: <https://w3id.org/tosl/> .
+@prefix tosla: <https://w3id.org/tosla/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .    
+
+
+#################################################
+# Shape for Agreement
+#################################################
+:AgreementShape a sh:NodeShape ;
+    sh:targetClass odrl:Agreement ;
+
+    sh:property [
+        sh:path odrl:permission ;
+        sh:minCount 0 ;
+        sh:node :PermissionShape ;
+        sh:message "If present, permission must conform to PermissionShape." ;
+    ] ;
+
+    sh:property [
+        sh:path odrl:obligation ;  # note: ODRL 2.2 uses odrl:duty not odrl:obligation
+        sh:minCount 0 ;
+        sh:node :DutyShape ;
+        sh:message "If present, obligation must conform to DutyShape." ;
+    ] ;
+
+    sh:property [
+        sh:path odrl:prohibition ;
+        sh:minCount 0 ;
+        sh:node :ProhibitionShape ;
+        sh:message "If present, prohibition must conform to ProhibitionShape." ;
+    ] ;
+
+    sh:property [
+        sh:path tosl:onDispute ;
+        sh:minCount 0 ;
+        sh:or (
+            [ sh:node :LitigationShape ]
+            [ sh:node :ArbitrationShape ]
+        ) ;
+        sh:message "May include a valid dispute resolution process: litigation or arbitration." ;
+    ] ;
+
+    sh:property [
+        sh:path tosl:liability ;
+        sh:minCount 0 ;
+        sh:node :LiabilityShape ;
+        sh:message "A liability is a responsibility of the liableParty and affects the targetParty." ;
+    ] ;
+
+    sh:property [
+        sh:path tosl:limitationOfLiability ;
+        sh:minCount 0 ;
+        sh:node :LiabilityShape ;
+        sh:message "A limitation of liability must conform to the LiabilityShape." ;
+    ] .
+
+
+#################################################
+# Shape for Permission
+#################################################
+
+:PermissionShape a sh:NodeShape ;
+    sh:targetClass odrl:Permission ;
+    sh:closed true ;
+    sh:ignoredProperties ( rdf:type ) ;
+
+    # --- 1. Must have a description ---
+    sh:property [ 
+        sh:path dcterms:description ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;         
+        sh:message "Each odrl:Permission must include a dcterms:description as a string literal with the statement to model." ;
+    ] ;
+
+    # --- 2. Must have an action of type odrl:Action (ODRL or TOSL) ---
+    sh:property [
+        sh:path odrl:action ;
+        sh:minCount 1 ;
+        sh:or (
+            [ sh:node :ActionShape ]
+            [ sh:node :ActionWithRefinementShape ]
+        );
+        sh:message "The value of the action node must be a valid action from the approved ODRL or TOSL action vocabulary. Unsupported or unknown actions are not allowed." ;
+    ] ;
+
+    # --- 3. Must have a target of allowed classes ---
+    sh:property [
+        sh:path odrl:target ;
+        sh:minCount 1 ;
+        sh:node :AssetTargetShape ;
+        sh:message "Target must be of type odrl:Asset, tosl:Service, or tosl:UserContent." ;
+    ] ;
+
+    # --- 4. Must have an assignee of allowed TOSL classes ---
+    sh:property [
+        sh:path odrl:assignee ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:node :ValidAssigneeShape ;
+        sh:message "The assignee must be a tosl:Provider, tosl:Customer, or tosl:BusinessCustomer." ;
+    ] ;
+
+    sh:property [
+        sh:path odrl:attributedParty ;
+        sh:node :ValidAssigneeShape ;
+        sh:message "The Party to be attributed must be valid." ;
+    ] ;
+
+    sh:property [
+        sh:path odrl:attributingParty ;
+        sh:node :ValidAssigneeShape ;
+        sh:message "The Party who undertakes the attribution must be valid." ;
+    ] ;
+
+    sh:property [
+        sh:path odrl:compensatedParty ;
+        sh:node :ValidAssigneeShape ;
+        sh:message "The compensated Party must be valid." ;
+    ] ;
+
+    sh:property [
+        sh:path odrl:compensatingParty ;
+        sh:node :ValidAssigneeShape ;
+        sh:message "The compensating Party must be valid." ;
+    ] ;
+
+    sh:property [
+        sh:path odrl:consentingParty ;
+        sh:node :ValidAssigneeShape ;
+        sh:message "The consenting Party must be valid." ;
+    ] ;
+
+    sh:property [
+        sh:path odrl:consentedParty ;
+        sh:node :ValidAssigneeShape ;
+        sh:message "The consented Party must be valid." ;
+    ] ;
+
+    sh:property [
+        sh:path odrl:contractingParty ;
+        sh:node :ValidAssigneeShape ;
+        sh:message "The contracting Party must be valid." ;
+    ] ;
+
+    sh:property [
+        sh:path odrl:contractedParty ;
+        sh:node :ValidAssigneeShape ;
+        sh:message "The contracted Party must be valid." ;
+    ] ;
+
+    sh:property [
+        sh:path odrl:informedParty ;
+        sh:node :ValidAssigneeShape ;
+        sh:message "The informed Party must be valid." ;
+    ] ;
+
+    sh:property [
+        sh:path odrl:informingParty ;
+        sh:node :ValidAssigneeShape ;
+        sh:message "The informing Party must be valid." ;
+    ] ;
+
+    sh:property [
+        sh:path odrl:trackingParty ;
+        sh:node :ValidAssigneeShape ;
+        sh:message "The tracking Party must be valid." ;
+    ] ;
+
+    sh:property [
+        sh:path odrl:trackedParty ;
+        sh:node :ValidAssigneeShape ;
+        sh:message "The tracked Party must be valid." ;
+    ];
+
+    # --- 5. Permission MAY have zero or more constraints ---
+    sh:property [
+        sh:path odrl:constraint ;
+        sh:minCount 0 ;
+        sh:or (
+            [ sh:node :ConstraintShape ]
+            [ sh:node :LogicalConstraintShape ]
+        ) ;
+        sh:message "Each constraint must conform to ConstraintShape or LogicalConstraintShape." ;
+    ] ;
+
+    # --- 6. Permission MAY have zero or more preconditions as Duties ---
+    sh:property [
+        sh:path odrl:duty ;  
+        sh:minCount 0 ; 
+        sh:node :DutyShape ;  
+        sh:message "Each duty must conform to DutyShape." ;
+    ] ;
+
+    # --- 7. Permission MAY have zero or more postconditions as Duties ---
+    sh:property [
+        sh:path tosl:trigger ;  
+        sh:minCount 0 ; 
+        sh:node :DutyShape ;  
+        sh:message "Each trigger must conform to DutyShape." ;
+    ] ;
+
+    # --- 8. MAY have liability or limitationOfLiability at rule level ---
+    sh:property [
+        sh:path tosl:liability ;
+        sh:minCount 0 ;
+        sh:node :LiabilityShape ;
+        sh:message "A liability is a responsability of the liableParty and affect to the targetParty." ;
+    ] ;
+
+    sh:property [
+        sh:path tosl:limitationOfLiability ;
+        sh:minCount 0 ;
+        sh:node :LiabilityShape ;
+        sh:message "A liability is a responsability of the liableParty and affect to the targetParty." ;
+    ] .
+
+#################################################
+# Shape for Duty
+#################################################
+
+:DutyShape a sh:NodeShape ;
+    sh:targetClass odrl:Duty ;
+    sh:closed true ;
+    sh:ignoredProperties ( rdf:type ) ;
+
+    # --- 1. Must have a description ---      
+    sh:property [ 
+        sh:path dcterms:description ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;         
+        sh:message "Each odrl:Duty must include a dcterms:description as a string literal with the statement to model." ;
+    ] ;
+        
+    # --- 2. Must have an action of type odrl:Action (ODRL or TOSL) ---
+    sh:property [
+        sh:path odrl:action ;
+        sh:minCount 1 ;
+        sh:or (
+            [ sh:node :ActionShape ]
+            [ sh:node :ActionWithRefinementShape ]
+        ) ;
+        sh:message "The value of the action node must be a valid action from the approved ODRL or TOSL action vocabulary. Unsupported or unknown actions are not allowed." ;
+    ] ;
+
+    # --- 3. Must have a target of allowed classes ---
+    sh:property [
+        sh:path odrl:target ;
+        sh:minCount 1 ;
+        sh:node :AssetTargetShape ;
+        sh:message "Target must be of type odrl:Asset, tosl:Service, or tosl:UserContent." ;
+    ] ;
+
+    # --- 4. Must have an assignee of allowed TOSL classes ---
+    sh:property [
+        sh:path odrl:assignee ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:node :ValidAssigneeShape ;
+        sh:message "The assignee must be a tosl:Provider, tosl:Customer, or tosl:BusinessCustomer." ;
+    ] ;
+
+    sh:property [
+        sh:path odrl:attributedParty ;
+        sh:node :ValidAssigneeShape ;
+        sh:message "The Party to be attributed must be valid." ;
+    ] ;
+
+    sh:property [
+        sh:path odrl:attributingParty ;
+        sh:node :ValidAssigneeShape ;
+        sh:message "The Party who undertakes the attribution must be valid." ;
+    ] ;
+
+    sh:property [
+        sh:path odrl:compensatedParty ;
+        sh:node :ValidAssigneeShape ;
+        sh:message "The compensated Party must be valid." ;
+    ] ;
+
+    sh:property [
+        sh:path odrl:compensatingParty ;
+        sh:node :ValidAssigneeShape ;
+        sh:message "The compensating Party must be valid." ;
+    ] ;
+
+    sh:property [
+        sh:path odrl:consentingParty ;
+        sh:node :ValidAssigneeShape ;
+        sh:message "The consenting Party must be valid." ;
+    ] ;
+
+    sh:property [
+        sh:path odrl:consentedParty ;
+        sh:node :ValidAssigneeShape ;
+        sh:message "The consented Party must be valid." ;
+    ] ;
+
+    sh:property [
+        sh:path odrl:contractingParty ;
+        sh:node :ValidAssigneeShape ;
+        sh:message "The contracting Party must be valid." ;
+    ] ;
+
+    sh:property [
+        sh:path odrl:contractedParty ;
+        sh:node :ValidAssigneeShape ;
+        sh:message "The contracted Party must be valid." ;
+    ] ;
+
+    sh:property [
+        sh:path odrl:informedParty ;
+        sh:node :ValidAssigneeShape ;
+        sh:message "The informed Party must be valid." ;
+    ] ;
+
+    sh:property [
+        sh:path odrl:informingParty ;
+        sh:node :ValidAssigneeShape ;
+        sh:message "The informing Party must be valid." ;
+    ] ;
+
+    sh:property [
+        sh:path odrl:trackingParty ;
+        sh:node :ValidAssigneeShape ;
+        sh:message "The tracking Party must be valid." ;
+    ] ;
+
+    sh:property [
+        sh:path odrl:trackedParty ;
+        sh:node :ValidAssigneeShape ;
+        sh:message "The tracked Party must be valid." ;
+    ];
+
+    # --- 5. Duty MAY have zero or more constraints ---
+    sh:property [
+        sh:path odrl:constraint ;
+        sh:minCount 0 ;
+        sh:or (
+            [ sh:node :ConstraintShape ]
+            [ sh:node :LogicalConstraintShape ]
+        ) ;
+        sh:message "Each constraint must conform to ConstraintShape or LogicalConstraintShape." ;
+    ] ;
+
+    # --- 6. Duty MAY have zero or more consequence as Duties ---
+    sh:property [
+        sh:path odrl:consequence ;  
+        sh:minCount 0 ; 
+        sh:node :DutyShape ;  
+        sh:message "Each consequence must conform to DutyShape." ;
+    ] ;
+
+    # --- 7. MAY have liability or limitationOfLiability at rule level ---
+    sh:property [
+        sh:path tosl:liability ;
+        sh:minCount 0 ;
+        sh:node :LiabilityShape ;
+        sh:message "A liability is a responsability of the liableParty and affect to the targetParty." ;
+    ] ;
+
+    sh:property [
+        sh:path tosl:limitationOfLiability ;
+        sh:minCount 0 ;
+        sh:node :LiabilityShape ;
+        sh:message "A liability is a responsability of the liableParty and affect to the targetParty." ;
+    ] .
+
+
+#################################################
+# Shape for Prohibition
+#################################################
+:ProhibitionShape a sh:NodeShape ;
+    sh:targetClass odrl:Prohibition ;
+    sh:closed true ;
+    sh:ignoredProperties ( rdf:type ) ;
+
+    # --- 1. Must have a description ---
+    sh:property [ 
+        sh:path dcterms:description ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;         
+        sh:message "Each odrl:Prohibition must include a dcterms:description as a string literal with the statement to model." ;
+    ] ;
+
+    # --- 2. Must have an action of allowed types (with optional refinement) ---
+    sh:property [
+        sh:path odrl:action ;
+        sh:minCount 1 ;
+        sh:or (
+            [ sh:node :ActionShape ]
+            [ sh:node :ActionWithRefinementShape ]
+        ) ;
+        sh:message "The value of the action node must be a valid action from the approved ODRL or TOSL action vocabulary. Unsupported or unknown actions are not allowed." ;
+    ] ;
+
+    # --- 3. Must have a target asset/service ---
+    sh:property [
+        sh:path odrl:target ;
+        sh:minCount 1 ;
+        sh:node :AssetTargetShape ;
+        sh:message "Target must be of type odrl:Asset, tosl:Service, or tosl:UserContent." ;
+    ] ;
+
+    # --- 4. Must have an assignee (e.g., who is prohibited) ---
+    sh:property [
+        sh:path odrl:assignee ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:node :ValidAssigneeShape ;
+        sh:message "The assignee must be a tosl:Provider, tosl:Customer, or tosl:BusinessCustomer." ;
+    ] ;
+
+    sh:property [
+        sh:path odrl:attributedParty ;
+        sh:node :ValidAssigneeShape ;
+        sh:message "The Party to be attributed must be valid." ;
+    ] ;
+
+    sh:property [
+        sh:path odrl:attributingParty ;
+        sh:node :ValidAssigneeShape ;
+        sh:message "The Party who undertakes the attribution must be valid." ;
+    ] ;
+
+    sh:property [
+        sh:path odrl:compensatedParty ;
+        sh:node :ValidAssigneeShape ;
+        sh:message "The compensated Party must be valid." ;
+    ] ;
+
+    sh:property [
+        sh:path odrl:compensatingParty ;
+        sh:node :ValidAssigneeShape ;
+        sh:message "The compensating Party must be valid." ;
+    ] ;
+
+    sh:property [
+        sh:path odrl:consentingParty ;
+        sh:node :ValidAssigneeShape ;
+        sh:message "The consenting Party must be valid." ;
+    ] ;
+
+    sh:property [
+        sh:path odrl:consentedParty ;
+        sh:node :ValidAssigneeShape ;
+        sh:message "The consented Party must be valid." ;
+    ] ;
+
+    sh:property [
+        sh:path odrl:contractingParty ;
+        sh:node :ValidAssigneeShape ;
+        sh:message "The contracting Party must be valid." ;
+    ] ;
+
+    sh:property [
+        sh:path odrl:contractedParty ;
+        sh:node :ValidAssigneeShape ;
+        sh:message "The contracted Party must be valid." ;
+    ] ;
+
+    sh:property [
+        sh:path odrl:informedParty ;
+        sh:node :ValidAssigneeShape ;
+        sh:message "The informed Party must be valid." ;
+    ] ;
+
+    sh:property [
+        sh:path odrl:informingParty ;
+        sh:node :ValidAssigneeShape ;
+        sh:message "The informing Party must be valid." ;
+    ] ;
+
+    sh:property [
+        sh:path odrl:trackingParty ;
+        sh:node :ValidAssigneeShape ;
+        sh:message "The tracking Party must be valid." ;
+    ] ;
+
+    sh:property [
+        sh:path odrl:trackedParty ;
+        sh:node :ValidAssigneeShape ;
+        sh:message "The tracked Party must be valid." ;
+    ];
+
+    # --- 5. MAY have constraint(s) ---
+    sh:property [
+        sh:path odrl:constraint ;
+        sh:minCount 0 ;
+        sh:or (
+            [ sh:node :ConstraintShape ]
+            [ sh:node :LogicalConstraintShape ]
+        ) ;
+        sh:message "Each constraint must conform to ConstraintShape or LogicalConstraintShape." ;
+    ] ;
+
+    # --- 6. MAY have remedy as a Duty (to be enforced if prohibition is violated) ---
+    sh:property [
+        sh:path odrl:remedy ;
+        sh:minCount 0 ;
+        sh:node :DutyShape ;
+        sh:message "Remedy must conform to DutyShape." ;
+    ] ;
+
+    # --- 7. MAY have liability or limitationOfLiability at rule level ---
+    sh:property [
+        sh:path tosl:liability ;
+        sh:minCount 0 ;
+        sh:node :LiabilityShape ;
+        sh:message "A liability is a responsability of the liableParty and affect to the targetParty." ;
+    ] ;
+
+    sh:property [
+        sh:path tosl:limitationOfLiability ;
+        sh:minCount 0 ;
+        sh:node :LiabilityShape ;
+        sh:message "A liability is a responsability of the liableParty and affect to the targetParty." ;
+    ] .
+
+# Auxiliar Shapes
+
+#################################################
+# Assignee Shape
+#################################################
+
+:ValidAssigneeShape a sh:NodeShape ;
+    sh:or (
+        [ sh:class odrl:Party ]
+        [ sh:class tosl:Provider ]
+        [ sh:class tosl:Customer ]
+        [ sh:class tosl:BusinessCustomer ]
+    ) .
+
+#################################################
+# Shape for Action without and with refinement
+#################################################
+:AllowedActionValueShape a sh:NodeShape ;
+    sh:in (
+        odrl:acceptTracking
+        odrl:aggregate
+        odrl:anonymize
+        odrl:annotate
+        odrl:archive
+        odrl:attribute
+        odrl:compensate
+        odrl:concurrentUse
+        odrl:delete
+        odrl:derive
+        odrl:digitize
+        odrl:display
+        odrl:distribute
+        odrl:ensureExclusivity
+        odrl:execute
+        odrl:extract
+        odrl:give
+        odrl:grantUse
+        odrl:include
+        odrl:index
+        odrl:inform
+        odrl:install
+        odrl:modify
+        odrl:move
+        odrl:nextPolicy
+        odrl:obtainConsent
+        odrl:play
+        odrl:present
+        odrl:print
+        odrl:read
+        odrl:reproduce
+        odrl:reviewPolicy
+        odrl:sell
+        odrl:stream
+        odrl:synchronize
+        odrl:textToSpeech
+        odrl:transfer
+        odrl:transform
+        odrl:translate
+        odrl:uninstall
+        odrl:use
+        odrl:watermark
+        tosl:allowDownload
+        tosl:appeal
+        tosl:assign
+        tosl:claim
+        tosl:consent
+        tosl:develop
+        tosl:evaluate
+        tosl:integrate
+        tosl:procedure
+        tosl:publish
+        tosl:remove
+        tosl:terminate
+        tosl:test
+        tosla:guarantee
+    ) ;
+    sh:message "Must be one of the allowed ODRL or TOSL actions." .
+
+:ActionShape a sh:NodeShape ;
+    sh:node :AllowedActionValueShape ;
+    sh:message "The action must be a valid ODRL or TOSL action." .
+
+:ActionWithRefinementShape a sh:NodeShape ;
+    sh:property [
+        sh:path rdf:value ;
+        sh:node :AllowedActionValueShape ;
+        sh:minCount 1 ;
+        sh:message "The value of the action node must be a valid action from the approved ODRL or TOSL action vocabulary." ;
+    ] ;
+
+    sh:property [
+        sh:path odrl:refinement ;
+        sh:or (
+            [ sh:node :ConstraintShape ]
+            [ sh:node :LogicalConstraintShape ]
+        ) ;
+        sh:minCount 1 ;
+        sh:message "When the action is a blank node, it MUST include a valid refinement." ;
+    ] .
+
+#################################################
+# Shape for Constraint
+#################################################
+
+:LogicalConstraintShape a sh:NodeShape ;
+    sh:targetClass odrl:LogicalConstraint ;
+    sh:closed true ;
+    sh:ignoredProperties ( rdf:type ) ;
+
+    sh:property [
+        sh:path odrl:and ;
+        sh:minCount 0 ;
+    ] ;
+
+    sh:property [
+        sh:path odrl:or ;
+        sh:minCount 0 ;
+    ] ;
+
+    sh:property [
+        sh:path odrl:xone ;
+        sh:minCount 0 ;
+    ] ;
+
+    sh:property [
+        sh:path odrl:andSequence ;
+        sh:minCount 0 ;
+    ] ;
+
+    sh:message "LogicalConstraint must contain only and, or, xone and andSequence, also a list of valid Constraint nodes." .
+
+:ConstraintShape a sh:NodeShape ;
+    sh:targetClass odrl:Constraint ;
+    sh:closed true ;
+    sh:ignoredProperties ( rdf:type ) ;
+
+    sh:property [ 
+        sh:path dcterms:description ;
+        sh:datatype xsd:string ;
+        sh:minCount 0 ;         
+    ] ;
+
+    # --- 1. Must have a leftOperand ---
+    sh:property [
+        sh:path odrl:leftOperand ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:or (
+            [
+                sh:in (
+                    odrl:absolutePosition
+                    odrl:absoluteSpatialPosition
+                    odrl:absoluteTemporalPosition
+                    odrl:absoluteSize
+                    odrl:count
+                    odrl:dateTime
+                    odrl:delayPeriod
+                    odrl:deliveryChannel
+                    odrl:elapsedTime
+                    odrl:event
+                    odrl:fileFormat
+                    odrl:industry
+                    odrl:language
+                    odrl:media
+                    odrl:meteredTime
+                    odrl:payAmount
+                    odrl:percentage
+                    odrl:product
+                    odrl:purpose
+                    odrl:recipient
+                    odrl:relativePosition
+                    odrl:relativeSpatialPosition
+                    odrl:relativeTemporalPosition
+                    odrl:relativeSize
+                    odrl:resolution
+                    odrl:spatial
+                    odrl:spatialCoordinates
+                    odrl:systemDevice
+                    odrl:timeInterval
+                    odrl:unitOfCount
+                    odrl:version
+                    odrl:virtualLocation
+                    tosl:justification
+                    tosl:totalAmount
+                    tosl:inactivityPeriod
+                    tosl:consumerResidentCountry
+                    tosl:consentType
+                    tosl:compliance
+                    tosl:licensingType
+                    tosl:effect
+                    foaf:age
+                ) 
+            ]
+            [ 
+                sh:class odrl:LeftOperand
+            ]
+        ) ;
+        sh:message "A Constraint must have exactly one odrl:leftOperand." ;
+    ] ;
+
+    # --- 2. Must have an operator ---
+    sh:property [
+        sh:path odrl:operator ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:in (
+            odrl:eq
+            odrl:gt
+            odrl:gteq
+            odrl:lt
+            odrl:lteq
+            odrl:neq
+            odrl:isA
+            odrl:hasPart
+            odrl:isPartOf
+            odrl:isAllOf
+            odrl:isAnyOf
+            odrl:isNoneOf
+        ) ;
+        sh:message "The operator must be one of the standard ODRL operators." ;
+    ] ;
+
+    # --- 3. Must have a rightOperand ---
+    sh:property [
+        sh:path odrl:rightOperand ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "A Constraint must have exactly one odrl:rightOperand." ;
+    ] ;
+
+    sh:property [
+        sh:path odrl:unit ;
+        sh:nodeKind sh:IRI ;
+        sh:minCount 0 ;
+        sh:message "The Constraint may have 'odrl:unit' to set the unit used for the value of the rightOperand" ;
+    ] .
+
+#################################################
+# Shape for Target Asset
+#################################################
+
+:AssetTargetShape a sh:NodeShape ;
+    sh:or (
+        [ sh:class odrl:Asset ]
+        [ sh:class tosl:Service ]
+        [ sh:class tosl:UserContent ]
+    ) ;
+
+    sh:property [
+        sh:path tosl:limitationOfLiability ;
+        sh:minCount 0 ;
+        sh:message "Asset may include limitation of liability." ;
+    ] ;
+
+    sh:property [
+        sh:path tosl:liability ;
+        sh:minCount 0 ;
+        sh:message "Asset may also specify general liabilities." ;
+    ] ;
+
+    sh:message "Target must be of type odrl:Asset, tosl:Service, or tosl:UserContent." .
+
+#################################################
+# Shape for Liability
+#################################################
+
+:LiabilityShape a sh:NodeShape ;
+    sh:targetClass tosl:Liability ;
+    sh:closed true ;
+    sh:ignoredProperties ( rdf:type ) ;
+
+    sh:property [
+        sh:path dcterms:description ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:message "A liability must have a description." ;
+    ] ;
+
+    sh:property [
+        sh:path rdf:value ;
+        sh:in (
+            tosl:anyLiability
+            tosl:physicalInjuries
+            tosl:harmCausedByMalware
+            tosl:discontinuity
+            tosl:anyIndirectDamage
+            tosl:directDamage
+            tosl:anyLoss
+            tosl:thirdParty
+            tosl:serviceContent
+            tosl:breachOfContract
+            tosl:legalCompliance
+            tosl:forceMajeure            
+            tosla:metricComputation
+            tosla:conditionEvaluation
+            tosla:scheduledMaintenance
+            tosla:selfHosting
+            tosla:paymentOverdue
+            tosla:networkFailure
+            tosla:userContent
+            tosla:securityBreach
+        ) ;
+        sh:minCount 1 ;
+        sh:message "rdf:value must be one of the predefined liability types in the tosl vocabulary." ;
+    ] ;
+
+    sh:property [
+        sh:path tosl:liableParty ;
+        sh:or (
+            [ sh:class tosl:Provider ]
+            [ sh:class tosl:Customer ]
+            [ sh:class tosl:BusinessCustomer ]
+        ) ;        
+        sh:minCount 1 ;
+        sh:message "A liability must specify at least one liable party." ;
+    ] ;
+
+    sh:property [
+        sh:path tosl:targetParty ;
+        sh:or (
+            [ sh:class tosl:Provider ]
+            [ sh:class tosl:Customer ]
+            [ sh:class tosl:BusinessCustomer ]
+        ) ;        
+        sh:minCount 0 ;
+        sh:message "A liability must specify at least one target party." ;
+    ] ;
+
+    sh:property [
+        sh:path tosl:limitation ;
+        sh:or (
+            [ sh:node :ConstraintShape ]
+            [ sh:node :LogicalConstraintShape ]
+        ) ;
+        sh:minCount 0 ;
+        sh:message "Limitation, if present, must conform to expected constraint structure." ;
+    ] .
+
+#################################################
+# Shape for Dispute resolution
+#################################################
+
+:LitigationShape a sh:NodeShape ;
+    sh:targetClass tosl:Litigation ;
+    sh:closed true ;
+    sh:ignoredProperties ( rdf:type ) ;
+
+    sh:property [ 
+        sh:path dcterms:description ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;         
+        sh:message "Each dispute resolution clause must include a dcterms:description." ;
+    ] ;
+
+    sh:property [
+        sh:path tosl:targetParty ;
+        sh:or (
+            [ sh:class tosl:Customer ]
+            [ sh:class tosl:BusinessCustomer ]
+        ) ;
+        sh:minCount 1 ;
+        sh:message "Litigation must target either a Customer or BusinessCustomer." ;
+    ] ;
+
+    sh:property [
+        sh:path tosl:takesPlaceIn ;
+        sh:class tosl:Jurisdiction ;
+        sh:minCount 1 ;
+        sh:message "Litigation must specify a jurisdiction." ;
+    ] ;
+
+    sh:property [
+        sh:path tosl:governedBy ;
+        sh:class tosl:Law ;
+        sh:minCount 1 ;
+        sh:message "Litigation must specify applicable law." ;
+    ] ;
+
+    sh:property [
+        sh:path tosl:condition ;
+        sh:or (
+            [ sh:node :ConstraintShape ]
+            [ sh:node :LogicalConstraintShape ]
+        ) ;
+        sh:minCount 0 ;
+        sh:message "If present, the litigation condition must follow constraint structure." ;
+    ] ;
+
+    sh:property [
+        sh:path tosl:requires ;
+        sh:class tosl:Arbitration ;
+        sh:minCount 0 ;
+        sh:message "Litigation may require prior arbitration, which must be correctly typed." ;
+    ] .
+
+:ArbitrationShape a sh:NodeShape ;
+    sh:targetClass tosl:Arbitration ;
+    sh:closed true ;
+    sh:ignoredProperties ( rdf:type ) ;
+
+    sh:property [ 
+        sh:path dcterms:description ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;         
+        sh:message "Each dispute resolution clause must include a dcterms:description." ;
+    ] ;
+
+    sh:property [
+        sh:path tosl:targetParty ;
+        sh:or (
+            [ sh:class tosl:Customer ]
+            [ sh:class tosl:BusinessCustomer ]
+        ) ;
+        sh:minCount 1 ;
+        sh:message "Arbitration must target either a Customer or BusinessCustomer." ;
+    ] ;
+
+    sh:property [
+        sh:path tosl:takesPlaceIn ;
+        sh:class tosl:Jurisdiction ;
+        sh:minCount 1 ;
+        sh:message "Arbitration must specify a jurisdiction." ;
+    ] ;
+
+    sh:property [
+        sh:path tosl:governedBy ;
+        sh:class tosl:Law ;
+        sh:minCount 1 ;
+        sh:message "Arbitration must specify applicable law." ;
+    ] ;
+
+    sh:property [
+        sh:path tosl:condition ;
+        sh:or (
+            [ sh:node :ConstraintShape ]
+            [ sh:node :LogicalConstraintShape ]
+        ) ;
+        sh:minCount 0 ;
+        sh:message "If present, the arbitration condition must follow constraint structure." ;
+    ] .

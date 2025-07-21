@@ -120,7 +120,8 @@
             a odrl:Constraint;
             odrl:leftOperand :monthlyUptimePercentage ;
             odrl:operator odrl:gteq ;
-            odrl:rightOperand "99.99"^^xsd:decimal
+            odrl:rightOperand "99.99"^^xsd:decimal ;
+            odrl:unit <http://qudt.org/vocab/unit#Percent>
         ] ;
         odrl:refinement [
             a odrl:Constraint;
@@ -152,11 +153,11 @@
     odrl:target :ec2RegionService ;
     odrl:action [
         a odrl:Action ;
-        rdf:value :claim ;
+        rdf:value tosl:claim ;
         odrl:refinement [
             a odrl:Constraint;
             odrl:leftOperand odrl:timeInterval ;
-            odrl:operator odrl:within ;
+            odrl:operator odrl:eq ;
             odrl:rightOperand :claimWindowAfterIncident
         ] ;
         odrl:refinement [
@@ -169,7 +170,8 @@
     odrl:constraint [
         odrl:leftOperand :monthlyUptimePercentage ;
         odrl:operator odrl:lt ;
-        odrl:rightOperand "99.99"^^xsd:decimal
+        odrl:rightOperand "99.99"^^xsd:decimal ;
+        odrl:unit <http://qudt.org/vocab/unit#Percent>
     ] .
 
 :compensationEC2Region10 a odrl:Duty ;
@@ -186,7 +188,7 @@
             odrl:leftOperand :serviceCreditPercentage ;
             odrl:operator odrl:eq ;
             odrl:rightOperand "10"^^xsd:decimal ;
-            qudt:unit <http://qudt.org/vocab/unit#Percent>
+            odrl:unit <http://qudt.org/vocab/unit#Percent>
         ] ;
         odrl:refinement [
             a odrl:Constraint ;
@@ -202,13 +204,15 @@
                 a odrl:Constraint ;
                 odrl:leftOperand :monthlyUptimePercentage ; 
                 odrl:operator odrl:gteq ; 
-                odrl:rightOperand "99.0"^^xsd:decimal 
+                odrl:rightOperand "99.0"^^xsd:decimal ;
+                odrl:unit <http://qudt.org/vocab/unit#Percent>
             ]
             [ 
                 a odrl:Constraint ;
                 odrl:leftOperand :monthlyUptimePercentage ;
                 odrl:operator odrl:lt ; 
-                odrl:rightOperand "99.99"^^xsd:decimal 
+                odrl:rightOperand "99.99"^^xsd:decimal ;
+                odrl:unit <http://qudt.org/vocab/unit#Percent>
             ]
         )
     ] .
@@ -226,7 +230,7 @@
             odrl:leftOperand :serviceCreditPercentage ;
             odrl:operator odrl:eq ;
             odrl:rightOperand "30"^^xsd:decimal ;
-            qudt:unit <http://qudt.org/vocab/unit#Percent>
+            odrl:unit <http://qudt.org/vocab/unit#Percent>
         ] ;
         odrl:refinement [
             odrl:leftOperand odrl:elapsedTime ;
@@ -241,13 +245,15 @@
                 a odrl:Constraint ;
                 odrl:leftOperand :monthlyUptimePercentage ; 
                 odrl:operator odrl:gteq ; 
-                odrl:rightOperand "95.0"^^xsd:decimal 
+                odrl:rightOperand "95.0"^^xsd:decimal ;
+                odrl:unit <http://qudt.org/vocab/unit#Percent>
             ]
             [ 
                 a odrl:Constraint ;
                 odrl:leftOperand :monthlyUptimePercentage ;
                 odrl:operator odrl:lt ; 
-                odrl:rightOperand "99.0"^^xsd:decimal 
+                odrl:rightOperand "99.0"^^xsd:decimal ;
+                odrl:unit <http://qudt.org/vocab/unit#Percent>
             ]
         )
     ] .
@@ -262,12 +268,14 @@
         a odrl:Action ;
         rdf:value odrl:compensate ;
         odrl:refinement [
+            a odrl:Constraint ;
             odrl:leftOperand :serviceCreditPercentage ;
             odrl:operator odrl:eq ;
             odrl:rightOperand "100"^^xsd:decimal ;
-            qudt:unit <http://qudt.org/vocab/unit#Percent>
+            odrl:unit <http://qudt.org/vocab/unit#Percent>
         ] ;
         odrl:refinement [
+            a odrl:Constraint ;
             odrl:leftOperand odrl:elapsedTime ;
             odrl:operator odrl:lteq ;
             odrl:rightOperand "P1M"^^xsd:duration
@@ -277,7 +285,8 @@
         a odrl:Constraint ;
         odrl:leftOperand :monthlyUptimePercentage ;
         odrl:operator odrl:lt ; 
-        odrl:rightOperand "99.5"^^xsd:decimal 
+        odrl:rightOperand "99.5"^^xsd:decimal ;
+        odrl:unit <http://qudt.org/vocab/unit#Percent>
     ] .
 
 # Commitment Instance-Level SLA
@@ -293,7 +302,8 @@
             a odrl:Constraint;
             odrl:leftOperand :monthlyUptimePercentage ;
             odrl:operator odrl:gteq ;
-            odrl:rightOperand "99.5"^^xsd:decimal
+            odrl:rightOperand "99.5"^^xsd:decimal ;
+            odrl:unit <http://qudt.org/vocab/unit#Percent>
         ] ;
         odrl:refinement [
             a odrl:Constraint;
@@ -326,11 +336,11 @@
     odrl:target :ec2RegionService ;
     odrl:action [
         a odrl:Action ;
-        rdf:value :claim ;
+        rdf:value tosl:claim ;
         odrl:refinement [
             a odrl:Constraint;
             odrl:leftOperand odrl:timeInterval ;
-            odrl:operator odrl:within ;
+            odrl:operator odrl:eq ;
             odrl:rightOperand :claimWindowAfterIncident
         ] ;
         odrl:refinement [
@@ -343,7 +353,8 @@
     odrl:constraint [
         odrl:leftOperand :monthlyUptimePercentage ;
         odrl:operator odrl:lt ;
-        odrl:rightOperand "99.5"^^xsd:decimal
+        odrl:rightOperand "99.5"^^xsd:decimal ;
+        odrl:unit <http://qudt.org/vocab/unit#Percent>
     ] .
 
 :compensationEC2Instance10 a odrl:Duty ;
@@ -359,7 +370,7 @@
             odrl:leftOperand :serviceCreditPercentage ;
             odrl:operator odrl:eq ;
             odrl:rightOperand "10"^^xsd:decimal ;
-            qudt:unit <http://qudt.org/vocab/unit#Percent>
+            odrl:unit <http://qudt.org/vocab/unit#Percent>
         ] ;
         odrl:refinement [
             odrl:leftOperand odrl:elapsedTime ;
@@ -374,13 +385,15 @@
                 a odrl:Constraint ;
                 odrl:leftOperand :monthlyUptimePercentage ; 
                 odrl:operator odrl:gteq ; 
-                odrl:rightOperand "99.0"^^xsd:decimal 
+                odrl:rightOperand "99.0"^^xsd:decimal ;
+                odrl:unit <http://qudt.org/vocab/unit#Percent>
             ]
             [ 
                 a odrl:Constraint ;
                 odrl:leftOperand :monthlyUptimePercentage ;
                 odrl:operator odrl:lt ; 
-                odrl:rightOperand "99.5"^^xsd:decimal 
+                odrl:rightOperand "99.5"^^xsd:decimal ;
+                odrl:unit <http://qudt.org/vocab/unit#Percent>
             ]
         )
     ] .
@@ -398,7 +411,7 @@
             odrl:leftOperand :serviceCreditPercentage ;
             odrl:operator odrl:eq ;
             odrl:rightOperand "30"^^xsd:decimal ;
-            qudt:unit <http://qudt.org/vocab/unit#Percent>
+            odrl:unit <http://qudt.org/vocab/unit#Percent>
         ] ;
         odrl:refinement [
             odrl:leftOperand odrl:elapsedTime ;
@@ -413,13 +426,15 @@
                 a odrl:Constraint ;
                 odrl:leftOperand :monthlyUptimePercentage ; 
                 odrl:operator odrl:gteq ; 
-                odrl:rightOperand "95.0"^^xsd:decimal 
+                odrl:rightOperand "95.0"^^xsd:decimal ;
+                odrl:unit <http://qudt.org/vocab/unit#Percent>
             ]
             [ 
                 a odrl:Constraint ;
                 odrl:leftOperand :monthlyUptimePercentage ;
                 odrl:operator odrl:lt ; 
-                odrl:rightOperand "99.0"^^xsd:decimal 
+                odrl:rightOperand "99.0"^^xsd:decimal ;
+                odrl:unit <http://qudt.org/vocab/unit#Percent>
             ]
         )
     ] .
@@ -437,7 +452,7 @@
             odrl:leftOperand :serviceCreditPercentage ;
             odrl:operator odrl:eq ;
             odrl:rightOperand "100"^^xsd:decimal ;
-            qudt:unit <http://qudt.org/vocab/unit#Percent>
+            odrl:unit <http://qudt.org/vocab/unit#Percent>
         ] ;
         odrl:refinement [
             odrl:leftOperand odrl:elapsedTime ;
@@ -449,7 +464,8 @@
         a odrl:Constraint ;
         odrl:leftOperand :monthlyUptimePercentage ;
         odrl:operator odrl:lt ; 
-        odrl:rightOperand "99.5"^^xsd:decimal 
+        odrl:rightOperand "99.5"^^xsd:decimal ;
+        odrl:unit <http://qudt.org/vocab/unit#Percent>
     ] .
 
 
@@ -503,7 +519,7 @@
             odrl:leftOperand :serviceCreditPercentage ;
             odrl:operator odrl:eq ;
             odrl:rightOperand "100"^^xsd:decimal ;
-            qudt:unit <http://qudt.org/vocab/unit#Percent>
+            odrl:unit <http://qudt.org/vocab/unit#Percent>
         ] ;
         odrl:refinement [
             a odrl:Constraint ;
@@ -514,7 +530,7 @@
     ] ;
     odrl:constraint [
         a odrl:Constraint ;
-        odrl:leftOperand :unavailabilityPerHour ;
+        odrl:leftOperand :unavailabilityDurationPerHour ;
         odrl:operator odrl:gt ;
         odrl:rightOperand "PT6M"^^xsd:duration
     ] .
@@ -531,7 +547,7 @@
 
 :liabilityCustomerOmissionOrTechnology a tosl:Liability ;
     dcterms:description "Unavailability due to Customer's actions or omissions, such as failing to acknowledge recovery volumes or respond to resource health issues." ;
-    rdf:value tosl:userContent ;
+    rdf:value tosla:userContent ;
     tosl:targetParty :customer ;
     tosl:liableParty :amazon .
 

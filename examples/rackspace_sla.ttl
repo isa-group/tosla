@@ -77,7 +77,7 @@
     dcterms:description "Rackspace must provide at least 99.99% availability per month." ;
     odrl:assignee :rackspace ;
     odrl:target :cloudBlockStorageService ;
-    odrl:action odrl:provide ;
+    odrl:action tosla:guarantee ;
     odrl:constraint [
         odrl:leftOperand :monthlyUptimePercentage ;
         odrl:operator odrl:gteq ;
