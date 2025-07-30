@@ -192,8 +192,8 @@ WHERE {
 
 | Agreement                          | Service                              | Service Description                                                      |
 |------------------------------------|--------------------------------------|--------------------------------------------------------------------------|
-| `http://example.com/amazonEC2SLA`  | `http://example.com/ec2RegionService`| EC2 instances deployed across multiple AZs within a single region        |
-| `http://example.com/amazonEC2SLA`  | `http://example.com/ec2InstanceService` | Single Amazon EC2 instance                                               |
+| http://example.com/amazonEC2SLA  | http://example.com/ec2RegionService | EC2 instances deployed across multiple AZs within a single region        |
+| http://example.com/amazonEC2SLA  | http://example.com/ec2InstanceService  | Single Amazon EC2 instance                                               |
 
 ---
 ### Obligations and Rights Example
@@ -228,8 +228,8 @@ GROUP BY ?duty ?assignee
 
 | Duty                                            | Actions                       | Targets                               | Assignee                           |
 |-------------------------------------------------|--------------------------------|----------------------------------------|-------------------------------------|
-| `http://example.com/customerClaimEC2Region`     | `https://w3id.org/tosl/claim`  | `http://example.com/ec2RegionService`  | `http://example.com/customer`       |
-| `http://example.com/customerClaimEC2Instance`   | `https://w3id.org/tosl/claim`  | `http://example.com/ec2RegionService`  | `http://example.com/customer`       |
+| http://example.com/customerClaimEC2Region     | https://w3id.org/tosl/claim  | http://example.com/ec2RegionService  | http://example.com/customer       |
+| http://example.com/customerClaimEC2Instance  | https://w3id.org/tosl/claim  | http://example.com/ec2RegionService  | http://example.com/customer       |
 
 ---
 
