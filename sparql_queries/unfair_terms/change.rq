@@ -11,9 +11,8 @@ WHERE {
         odrl:target ?target .
 
     ?assignee a tosl:Provider .
-
+    
     FILTER (?action = odrl:modify)
-
     OPTIONAL {
         ?permission odrl:constraint ?constraint .
         ?constraint odrl:leftOperand tosl:justification
@@ -22,7 +21,5 @@ WHERE {
         ?permission odrl:duty ?duty .
         ?duty odrl:action odrl:inform .
     }
-
     FILTER (!BOUND(?constraint) || !BOUND(?duty))
-
 }

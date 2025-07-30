@@ -167,10 +167,112 @@ Ontology file (TBox), defining structured concepts.
 3. First part of the notebook is the TOSLA validator and later the Competency Questions, Potentially unfair terms and the obligations, permissions, and prohibitions of the parties.
 4. Execute the code cell and modify the KG as needed.
 
+### Competency Questions Example
+**CQ1:** *Which services are governed by the SLA?*  Below is an example of a SPARQL query to parse and execute this competency question.
 
-```plaintext
+```sparql
+PREFIX odrl: <http://www.w3.org/ns/odrl/2/>
+PREFIX tosl: <https://w3id.org/tosl/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 
-````
+SELECT DISTINCT ?agreement ?service ?serviceDescription
+WHERE {
+  ?agreement a odrl:Agreement ;
+             odrl:assigner ?provider .
+  
+  ?provider odrl:assignerOf ?service .
+  
+  ?service a tosl:Service ;
+           dcterms:description ?serviceDescription .
+}
+```
+
+**Example result** – Execution over the *Amazon EC2 SLA*:
+
+| Agreement                          | Service                              | Service Description                                                      |
+|------------------------------------|--------------------------------------|--------------------------------------------------------------------------|
+| `http://example.com/amazonEC2SLA`  | `http://example.com/ec2RegionService`| EC2 instances deployed across multiple AZs within a single region        |
+| `http://example.com/amazonEC2SLA`  | `http://example.com/ec2InstanceService` | Single Amazon EC2 instance                                               |
+
+---
+### Obligations and Rights Example
+
+**Query:** *Select all duties assigned to the customer.*
+
+```sparql
+PREFIX odrl: <http://www.w3.org/ns/odrl/2/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX tosl: <https://w3id.org/tosl/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+SELECT ?duty 
+       (GROUP_CONCAT(DISTINCT ?actionValue; separator=", ") AS ?actions)
+       (GROUP_CONCAT(DISTINCT ?target; separator=", ") AS ?targets) 
+       ?assignee
+WHERE {
+    ?duty a odrl:Duty ;
+          odrl:assignee ?assignee ;
+          odrl:target ?target ;
+          odrl:action ?actionNode .
+          
+    ?assignee a tosl:Customer .
+
+    OPTIONAL { ?actionNode rdf:value ?actionVal . }
+    BIND(COALESCE(?actionVal, ?actionNode) AS ?actionValue)
+} 
+GROUP BY ?duty ?assignee
+```
+
+**Example result** – Execution over the *Amazon EC2 SLA*:
+
+| Duty                                            | Actions                       | Targets                               | Assignee                           |
+|-------------------------------------------------|--------------------------------|----------------------------------------|-------------------------------------|
+| `http://example.com/customerClaimEC2Region`     | `https://w3id.org/tosl/claim`  | `http://example.com/ec2RegionService`  | `http://example.com/customer`       |
+| `http://example.com/customerClaimEC2Instance`   | `https://w3id.org/tosl/claim`  | `http://example.com/ec2RegionService`  | `http://example.com/customer`       |
+
+---
+
+### Unfair Terms detection Example
+
+**Goal:** Detect SLA terms where the **provider** reserves the right to modify the agreement **unilaterally**, without providing justification or prior notice.  
+
+```sparql
+PREFIX odrl: <http://www.w3.org/ns/odrl/2/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX tosl: <https://w3id.org/tosl/>
+
+SELECT ?permission ?description ?action ?target
+WHERE {
+    ?permission a odrl:Permission ;
+        dcterms:description ?description ;
+        odrl:action ?action ;
+        odrl:assignee ?assignee ;
+        odrl:target ?target .
+
+    ?assignee a tosl:Provider .
+    
+    FILTER (?action = odrl:modify)
+    OPTIONAL {
+        ?permission odrl:constraint ?constraint .
+        ?constraint odrl:leftOperand tosl:justification
+    }
+    OPTIONAL {
+        ?permission odrl:duty ?duty .
+        ?duty odrl:action odrl:inform .
+    }
+    FILTER (!BOUND(?constraint) || !BOUND(?duty))
+}
+```
+
+**Example result** – Execution over the *Alibaba SLA*:
+
+
+| permission                                     | description                                                                                                                                                                                   | action                              | target                                |
+| ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ | -------------------------------------- |
+| http://example.com/slaModificationPermission   | Alibaba reserves the right to unilaterally modify the terms of this SLA by posting an amended version on the Alibaba Cloud website. Continued use of the Service shall be deemed acceptance. | http://www.w3.org/ns/odrl/2/modify   | http://example.com/alibabaECSSLA       |
+
+
 
 
 

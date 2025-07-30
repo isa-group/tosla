@@ -107,10 +107,10 @@ CU6: Enable automated verification of whether actions performed by the provider 
 ---
 ### 8. Non-Ontological Resources
 
-[NIST-500-307](https://www.nist.gov/publications/cloud-computing-service-metrics-description)
-[ISO-IEC-19086](https://www.iso.org/standard/67545.html)
-[Garcia_et_al](https://ieeexplore.ieee.org/document/7519020)
-[Ganapathy_et_al](https://ieeexplore.ieee.org/document/9678067)
+- [NIST-500-307](https://www.nist.gov/publications/cloud-computing-service-metrics-description)
+- [ISO-IEC-19086](https://www.iso.org/standard/67545.html)
+- [Garcia_et_al](https://ieeexplore.ieee.org/document/7519020)
+- [Ganapathy_et_al](https://ieeexplore.ieee.org/document/9678067)
 
 ---
 ### 9. Ontological Resources
