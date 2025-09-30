@@ -26,7 +26,8 @@
     dcterms:language "en"^^xsd:string ;
     odrl:profile <https://w3id.org/tosl/> ;
     odrl:assigner :Alibaba ;
-    odrl:target :services .
+    odrl:target :services ;
+    tosl:onDispute :europeDisputeResolution .
 
 ### Parties
 :Alibaba a tosl:Provider, foaf:Organization ;
@@ -667,3 +668,27 @@
         odrl:target :AlibabaTermsOfService ;
         odrl:informedParty :customer
     ] .
+
+
+########## Europe Addendum to Alibaba Cloud Product Terms of Service ###########
+# 4. Section 5.8 shall be replaced by the following: These Product Terms and   #
+# any dispute or claim arising out of or in connection with them or their      #
+# subject matter or formation (including non-contractual disputes or claims)   #
+# shall be governed by and construed in accordance with the law of England and #
+# Wales. Each party to these Product Terms irrevocably agrees that the courts  #
+# of England and Wales shall have exclusive jurisdiction to settle any dispute #
+# or claim arising out of or in connection with these Product Terms or their   #
+# subject matter or formation (including non-contractual disputes or claims).  #
+################################################################################
+
+:europeDisputeResolution a tosl:Litigation ;
+  dcterms:description "These Product Terms and any dispute or claim arising out of or in connection with them or their subject matter or formation (including non-contractual disputes or claims) shall be governed by and construed in accordance with the law of England and Wales. Each party to these Product Terms irrevocably agrees that the courts of England and Wales shall have exclusive jurisdiction to settle any dispute or claim arising out of or in connection with these Product Terms or their subject matter or formation (including non-contractual disputes or claims)." ;
+  tosl:targetParty :customer ;
+  tosl:takesPlaceIn :englandWalesCourts ;
+  tosl:governedBy :englandWalesLaw .
+
+:englandWalesCourts a tosl:Jurisdiction ;
+  dcterms:description "The courts of England and Wales with exclusive jurisdiction over disputes arising from these Product Terms." .
+
+:englandWalesLaw a tosl:Law ;
+  dcterms:description "The law of England and Wales governing these Product Terms." .
