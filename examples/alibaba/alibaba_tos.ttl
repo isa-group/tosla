@@ -1,0 +1,669 @@
+@prefix : <http://example.com/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
+@prefix schema: <http://schema.org/> .
+@prefix odrl: <http://www.w3.org/ns/odrl/2/> .
+@prefix tosl: <https://w3id.org/tosl/> .
+@base <http://example.com> .
+
+
+:AlibabaTermsOfService a odrl:Agreement, odrl:Asset ;
+    dcterms:source <https://www.alibabacloud.com/help/en/legal/latest/alibaba-cloud-international-website-product-terms-of-service-v-3-8-0> ;
+    odrl:hasPolicy <https://www.alibabacloud.com/help/en/legal/latest/alibaba-cloud-international-website-product-terms-of-service-v-3-8-0> ;
+    dcterms:title "Alibaba Cloud International Website Product Terms of Service"^^xsd:string ;
+    dcterms:description "Terms and conditions applicable to the purchase and use of products and services offered via www.alibabacloud.com (the Alibaba Cloud Platform)."^^xsd:string ;
+    dcterms:creator "Alibaba Cloud"^^xsd:string ;
+    dcterms:publisher :Alibaba ;
+    dcterms:rightsHolder :Alibaba ;
+    dcterms:issued "2025-09-19"^^xsd:date ;  
+    dcterms:language "en"^^xsd:string ;
+    odrl:profile <https://w3id.org/tosl/> ;
+    odrl:assigner :Alibaba ;
+    odrl:target :services .
+
+### Parties
+:Alibaba a tosl:Provider, foaf:Organization ;
+    foaf:name "Alibaba Cloud" ;
+    foaf:homepage <https://www.alibabacloud.com/> ;
+    dcterms:description "Global cloud service provider for the Alibaba Cloud Platform (www.alibabacloud.com)."^^xsd:string ;
+    odrl:assignerOf :services .
+
+:customer a tosl:Customer ;
+    dcterms:description "Purchaser and/or end-user of Alibaba Cloud Products under the Product Terms."^^xsd:string .
+
+:businessCustomer a tosl:BusinessCustomer ;
+    dcterms:description "Business entity consuming Alibaba Cloud Products in a commercial context under the Product Terms."^^xsd:string .
+
+:resellerEndUser a tosl:Customer;
+    dcterms:description "End-users/customers of an authorized reseller or distributor"^^xsd:string .
+
+:Reseller a odrl:Party, tosl:Provider ;
+  dcterms:title "Authorized Reseller/Distributor" .
+
+
+### Section 2.1 (Contracting Entity and Account)
+:AlibabaCloud_Singapore a foaf:Organization ;
+    foaf:name "Alibaba Cloud (Singapore) Private Limited"^^xsd:string ;
+    dcterms:coverage "All jurisdictions outside USA, Europe, India, and Malaysia"^^xsd:string ;
+    foaf:homepage <https://www.alibabacloud.com/> .
+
+:AlibabaCloud_US a foaf:Organization ;
+    foaf:name "Alibaba Cloud US LLC"^^xsd:string ;
+    dcterms:coverage "United States of America"^^xsd:string ;
+    foaf:homepage <https://www.alibabacloud.com/> .
+
+:Alibaba_Europe_Limited a foaf:Organization ;
+    foaf:name "Alibaba.com (Europe) Limited"^^xsd:string ;
+    dcterms:coverage "United Kingdom, Switzerland, and other European jurisdictions outside the EEA"^^xsd:string ;
+    foaf:homepage <https://www.alibabacloud.com/> .
+
+:Alibaba_Netherlands_BV a foaf:Organization ;
+    foaf:name "Alibaba (Netherlands) B.V."^^xsd:string ;
+    dcterms:coverage "Member states within the European Economic Area (EEA)"^^xsd:string ;
+    foaf:homepage <https://www.alibabacloud.com/> .
+
+:AlibabaCloud_India a foaf:Organization ;
+    foaf:name "Alibaba Cloud (India) LLP"^^xsd:string ;
+    dcterms:coverage "India"^^xsd:string ;
+    foaf:homepage <https://www.alibabacloud.com/> .
+
+:AlibabaCloud_Malaysia a foaf:Organization ;
+    foaf:name "Alibaba Cloud (Malaysia) Sdn. Bhd."^^xsd:string ;
+    dcterms:coverage "Malaysia"^^xsd:string ;
+    foaf:homepage <https://www.alibabacloud.com/> .
+
+:Alibaba foaf:hasSubOrganization :AlibabaCloud_Singapore, :AlibabaCloud_US,
+                                  :Alibaba_Europe_Limited, :Alibaba_Netherlands_BV,
+                                  :AlibabaCloud_India, :AlibabaCloud_Malaysia .
+
+### Assets
+
+:services a tosl:Service ;
+    dcterms:title "Alibaba Cloud Products and Services available on www.alibabacloud.com"^^xsd:string ;
+    foaf:homepage <https://www.alibabacloud.com/> .
+
+:content a tosl:UserContent;
+    dcterms:description "User-generated content provided, uploaded, or otherwise made available by the customer when using the Products." ;
+    dcterms:rightsHolder :customer .
+
+############## 1. Application and Acceptance of the Product Terms ##############
+#                                                                              #
+# 1.1 These Product Terms apply to your purchase and/or use of the Products on #
+# the Alibaba Cloud Platform.                                                  #
+# 1.2 By purchasing and/or using the Products,you agree to accept and be bound # 
+# by these Product Terms.You may be required to enter into a separate          #
+# agreement,whether online or offline,with Alibaba Cloud or Alibaba Cloud’s    #
+# affiliate for i) use of the Alibaba Cloud Platform; or ii) purchase of the   #
+# Products or any other products or services offered by Alibaba Cloud          #
+# (“Additional Agreements”).If there is any conflict or inconsistency between  #
+# these Product Terms and any Additional Agreement,the Additional Agreement    #
+# shall take precedence over the Product Terms only in relation to the portion #
+# of the Products governed by the conflicting Additional Agreements.           #
+#                                                                              #
+# 1.3 Please do not purchase and/or use the Products if you do not agree and   #
+# accept all of the Product Terms and/or Additional Agreements (if applicable) #
+#                                                                              #
+################################################################################
+
+
+:permissionUsePurchase a odrl:Permission ;
+    dcterms:description "Permission to use or purchase the Products on the Platform." ;
+    odrl:action odrl:use;
+    odrl:target :services ;
+    odrl:assignee :customer ;
+    odrl:duty :dutyImplicitConsent .
+
+:dutyImplicitConsent a odrl:Duty ;
+    dcterms:description "Customer implicitly accepts the Product Terms by using or purchasing the Products." ;
+    odrl:action tosl:consent ;
+    odrl:assignee :customer ;
+    odrl:constraint [
+        a odrl:Constraint ;
+        odrl:leftOperand tosl:consentType ;
+        odrl:operator odrl:eq ;
+        odrl:rightOperand tosl:implicitConsent
+    ] ;
+    odrl:target :AlibabaTermsOfService .
+
+############## 1. Application and Acceptance of the Product Terms ##############
+#                                                                              #
+# 1.4 You acknowledge and agree that Alibaba Cloud may amend the Product Terms #
+# at any time by posting the relevant amended and restated Product Terms on    #
+# the Alibaba Cloud Platform.By continuing to use the Products after the       #
+# posting of the amended and restated Product Terms, you agree that the        #
+# amended Product Terms will apply to you.                                     #
+#                                                                              #
+################################################################################
+
+:postAmendedTerms a odrl:RightOperand, schema:Event ;
+    rdfs:label "Posting of amended Product Terms on the Alibaba Cloud Platform" ;
+    dcterms:description "The moment the amended and restated Product Terms are posted on the Platform." .
+
+:permAmendTerms a odrl:Permission ;
+    dcterms:description "Alibaba may amend and restate the Product Terms by posting them on the Platform." ;
+    odrl:action odrl:modify ;
+    odrl:target :AlibabaTermsOfService ;
+    odrl:assignee :Alibaba ;
+    odrl:duty :dutyPostAmendedTerms .
+
+:dutyPostAmendedTerms a odrl:Duty ;
+    dcterms:description "Post the amended Product Terms on the Alibaba Cloud Platform." ;
+    odrl:action tosl:publish ;
+    odrl:target :AlibabaTermsOfService ;
+    odrl:assignee :Alibaba ;
+    odrl:constraint [
+        a odrl:Constraint ;
+        odrl:leftOperand odrl:deliveryChannel ;
+        odrl:operator odrl:eq ;
+        odrl:rightOperand <https://www.alibabacloud.com/>
+    ] .
+
+:permContinuedUseImpliesAcceptance a odrl:Permission ;
+    dcterms:description "Continued use of the Products after posting implies acceptance of the amended Product Terms." ;
+    odrl:action odrl:use ;
+    odrl:target :services ;
+    odrl:assignee :customer ;
+    odrl:constraint [
+        a odrl:Constraint ;
+        odrl:leftOperand odrl:event ;
+        odrl:operator odrl:gt ;
+        odrl:rightOperand :postAmendedTerms
+    ] ;
+    odrl:duty :dutyImplicitConsentAmendedTerms .
+
+:dutyImplicitConsentAmendedTerms a odrl:Duty ;
+    dcterms:description "Customer implicitly accepts the amended Product Terms by continuing to use the Products after posting." ;
+    odrl:action tosl:consent ;
+    odrl:assignee :customer ;
+    odrl:constraint [
+        a odrl:Constraint ;
+        odrl:leftOperand tosl:consentType ;
+        odrl:operator odrl:eq ;
+        odrl:rightOperand tosl:implicitConsent
+    ] ;
+    odrl:target :AlibabaTermsOfService .
+
+
+############## 1. Application and Acceptance of the Product Terms ##############
+# 1.5 If you are a customer or end-user of an Alibaba Cloud authorized         #
+# reseller or distributor,then the provisions hereunder related to pricing,    #
+# billing,invoicing and payment,and service and maintenance (including but not #
+# limited to Sections 3.7, 3.10, 3.11 of the Product Terms and Sections 1-3    #
+# and 6 of the Singapore Addendum to Alibaba Cloud Product Terms) shall not    #
+# apply to you.Instead,the terms of your existing agreement or purchase order  #
+# with your reseller or distributor shall govern such areas.                   #
+#                                                                              #
+# 1.6 If you are an Alibaba Cloud authorized reseller or distributor, then     #
+# Alibaba Cloud agrees that pursuant to Section 3.12 of the Product Terms, if  # 
+# your end customers should experience an usage issue with Alibaba Cloud       #
+# Products that they have purchased for a fee,and such usage issue is finally  #
+# determined to be solely caused by Alibaba Cloud,then Alibaba Cloud will      #
+# assume responsibility for such end customer usage issue by providing you     #
+# with the Service Guarantees as provided in the SLAs (as defined in Section   #
+# 3.12).                                                                       #
+################################################################################
+
+:providerServiceMaintenance a odrl:Asset ;
+  dcterms:description "Provider warranties or service & maintenance by Alibaba" .
+
+:prohibitWarrantyClaims a odrl:Prohibition ;
+    dcterms:description "Reseller end-users may not claim provider warranties or maintenance directly from Alibaba." ;
+    odrl:assignee :resellerEndUser ;
+    odrl:action tosl:claim ;
+    odrl:target :providerServiceMaintenance .
+
+:noWarrantyForResellerEndUser a tosl:Liability ;
+    dcterms:description "Provider is not liable for any warranties, actions, omissions or obligations owed to third parties (reseller end-users)." ;
+    tosl:liableParty :Alibaba ;
+    tosl:targetParty :resellerEndUser ;
+    rdf:value tosl:thirdParty .
+
+:liabilityReseller a tosl:Liability ;
+    dcterms:description "The reseller is responsible for usages issues." ;
+    tosl:liableParty :Reseller ;
+    tosl:targetParty :resellerEndUser ;
+    rdf:value tosl:directDamage, tosl:anyIndirectDamage, tosl:anyLoss, tosl:breachOfContract, tosl:legalCompliance .
+
+################################################################################
+####################### 2. Contracting Entity and Account ######################
+# 2.2 Some Products or services of the Alibaba Cloud Platform may be offered   #
+# or provided by Alibaba Cloud’s affiliates on behalf of Alibaba Cloud.        #
+# 2.3 Some products,services,promotions,campaigns,service level agreements,    #
+# guarantees,and/or other forms of offerings may only apply to customers in    #
+# particular locations (including as may be described in the regional pages of # 
+# the Alibaba Cloud Platform (the“Regional Offerings”). These Regional         #
+# Offerings may be offered or provided by entities other than Alibaba Cloud.   #
+# These Regional Offerings and the terms related thereto may not apply to you  #
+# and/or the main Alibaba Cloud Platform.Unless otherwise specified, these     #
+# Regional Offerings are not offered or provided by Alibaba Cloud and Alibaba  #
+# Cloud is not liable for any matters related to the Regional Offerings.       #
+# Likewise, the Products, services, promotions, campaigns, service level       #
+# agreements, guarantees, and/or other forms of offerings of the Alibaba Cloud # 
+# Platform (the“Alibaba Cloud Offerings”) may not apply to customers eligible  #
+# for Regional Offerings and the offering entities of the Regional Offerings   #
+# shall not be liable for these offerings unless otherwise specified. You are  #
+# responsible for reviewing the terms and conditions for each Regional         #
+# Offering and Alibaba Cloud Offering carefully before agreeing to             #
+# participate, purchase, or use any of the Regional Offerings or Alibaba Cloud #
+# Offerings as the terms and conditions for each offering may differ.          #
+# You agree that you shall be bound by our determination as to whether a       #
+# particular product, service, promotion, campaign, service level agreement,   #
+# guarantee, and/or other forms of offering constitutes a Regional Offering    #
+# and/or an Alibaba Cloud Offering and the relevant terms applicable thereto.  #
+# If you do not agree to the applicable terms and conditions, you shall cease  #
+# your participation in, use, or purchase of the relevant offerings.           #
+################################################################################
+
+:regionalOffering a odrl:Asset ;
+    dcterms:title "Regional Offerings" .
+
+:permUseRegional a odrl:Permission ;
+    dcterms:description "Permission to use a Regional Offering is limited to customers in certain geographic areas." ;
+    odrl:target :regionalOffering ;
+    odrl:assignee :customer ;
+    odrl:action odrl:use ;
+    odrl:constraint 
+        [ a odrl:Constraint ;
+          odrl:leftOperand odrl:spatial ;
+          odrl:operator odrl:eq ;
+          odrl:rightOperand <http://sws.geonames.org/1880251/>  # Singapore
+        ] ,
+        [ a odrl:Constraint ;
+          odrl:leftOperand odrl:spatial ;
+          odrl:operator odrl:eq ;
+          odrl:rightOperand <http://sws.geonames.org/6252001/>  # United States
+        ] ,
+        [ a odrl:Constraint ;
+          odrl:leftOperand odrl:spatial ;
+          odrl:operator odrl:eq ;
+          odrl:rightOperand <http://sws.geonames.org/2635167/>  # United Kingdom
+        ] ,
+        [ a odrl:Constraint ;
+          odrl:leftOperand odrl:spatial ;
+          odrl:operator odrl:eq ;
+          odrl:rightOperand <http://sws.geonames.org/2658434/>  # Switzerland
+        ] ,
+        [ a odrl:Constraint ;
+          odrl:leftOperand odrl:spatial ;
+          odrl:operator odrl:eq ;
+          odrl:rightOperand <http://sws.geonames.org/6255148/>  # European Economic Area (EEA)
+        ] ,
+        [ a odrl:Constraint ;
+          odrl:leftOperand odrl:spatial ;
+          odrl:operator odrl:eq ;
+          odrl:rightOperand <http://sws.geonames.org/1269750/>  # India
+        ] ,
+        [ a odrl:Constraint ;
+          odrl:leftOperand odrl:spatial ;
+          odrl:operator odrl:eq ;
+          odrl:rightOperand <http://sws.geonames.org/1733045/>  # Malaysia
+        ] ;
+    tosl:liability [
+        a tosl:Liability ;
+        dcterms:description "Regional providers are not liable for Alibaba Cloud Offerings." ;
+        tosl:liableParty :Alibaba ;
+        tosl:targetParty :customer ;
+        rdf:value tosl:breachOfContract 
+    ] .
+    
+
+################################################################################
+############################ 3. General Product Terms ##########################
+# 3.1 Benefits,features and functions available to you for any of the Products #
+# may vary for different countries and regions. No warranty or representation  #
+# is given that a particular feature or function or the same type and extent   #
+# of features and functions will be available in all countries and regions or  #
+# for all users.Alibaba Cloud may in its sole discretion limit, deny or create #
+# different level of access to and use of any the Products (or any features    #
+# comprised therein) with respect to different users.                          #
+################################################################################
+
+:features a odrl:Asset ;
+  dcterms:title "Alibaba Cloud Product Features (generic)" .
+
+:permUseFeatureRegional a odrl:Permission ;
+  dcterms:description "Use of Product Features depends on the customer's region." ;
+  odrl:assignee :customer ;
+  odrl:action odrl:use ;
+  odrl:target :features ;
+      odrl:constraint 
+        [ a odrl:Constraint ;
+          odrl:leftOperand odrl:spatial ;
+          odrl:operator odrl:eq ;
+          odrl:rightOperand <http://sws.geonames.org/1880251/>  # Singapore
+        ] ,
+        [ a odrl:Constraint ;
+          odrl:leftOperand odrl:spatial ;
+          odrl:operator odrl:eq ;
+          odrl:rightOperand <http://sws.geonames.org/6252001/>  # United States
+        ] ,
+        [ a odrl:Constraint ;
+          odrl:leftOperand odrl:spatial ;
+          odrl:operator odrl:eq ;
+          odrl:rightOperand <http://sws.geonames.org/2635167/>  # United Kingdom
+        ] ,
+        [ a odrl:Constraint ;
+          odrl:leftOperand odrl:spatial ;
+          odrl:operator odrl:eq ;
+          odrl:rightOperand <http://sws.geonames.org/2658434/>  # Switzerland
+        ] ,
+        [ a odrl:Constraint ;
+          odrl:leftOperand odrl:spatial ;
+          odrl:operator odrl:eq ;
+          odrl:rightOperand <http://sws.geonames.org/6255148/>  # European Economic Area (EEA)
+        ] ,
+        [ a odrl:Constraint ;
+          odrl:leftOperand odrl:spatial ;
+          odrl:operator odrl:eq ;
+          odrl:rightOperand <http://sws.geonames.org/1269750/>  # India
+        ] ,
+        [ a odrl:Constraint ;
+          odrl:leftOperand odrl:spatial ;
+          odrl:operator odrl:eq ;
+          odrl:rightOperand <http://sws.geonames.org/1733045/>  # Malaysia
+        ] ;
+    tosl:liability [
+        a tosl:Liability ;
+        dcterms:description "No warranty or representation that specific features or the same extent of features are available in all countries/regions or for all users." ;
+        tosl:liableParty :Alibaba ;
+        tosl:targetParty :customer ;
+        rdf:value tosl:discontinuity, tosl:anyLiability, tosl:anyLoss 
+    ] .
+
+############################ 3. General Product Terms ##########################
+# 3.2 You must comply with the relevant technical documentation applicable to  #
+# the Products as posted and updated by Alibaba Cloud from time to time at the #
+# Alibaba Cloud Platform.You further agree,as a continuing condition for your  #
+# use of the Product,to abide by all licence terms and conditions of all third #
+# party software components, libraries and application programme interfaces    #
+# comprised in any Product as from time to time notified on the Alibaba Cloud  #
+# Platform.                                                                    #
+################################################################################
+
+:permUseCompliance a odrl:Permission ;
+  dcterms:description "Use of the Products is permitted provided you comply with the applicable technical documentation and all third-party license terms as posted and updated on the Alibaba Cloud Platform." ;
+  odrl:assignee :customer ;
+  odrl:target :services ;
+  odrl:action [
+    a odrl:Action ;
+    rdf:value odrl:use ;
+    odrl:refinement
+      [ a odrl:Constraint ;
+        odrl:leftOperand tosl:compliance ;
+        odrl:operator odrl:eq ;
+        odrl:rightOperand "https://www.alibabacloud.com/"^^xsd:string    
+      ]
+  ] .
+
+############################ 3. General Product Terms ##########################
+# 3.3 Alibaba Cloud may launch, change, upgrade, impose conditions to,         #
+# suspend, or stop offering any Product (or any features or functions within   #
+# the Products),including sign-on procedures and requirements,and the manner   #
+# of access to any Product (including any URLs used in connection therewith)   #
+# without prior notice.                                                        #
+# Alibaba Cloud may also in its discretion, and after                          #
+# reasonable prior notice to you, relocate, suspend or cease operations at any #
+# data center. In the event of such relocation, suspension or termination of   #
+# operations, you may need to change or update configurations of any affected  #
+# Products, and will be responsible for any failure to change or update your   #
+# configurations in the time period provided in the notice.                    #
+################################################################################
+
+:permProductChanges a odrl:Permission ;
+    dcterms:description "Alibaba may launch, change, upgrade, impose conditions on, suspend, or stop offering any Product/features, including sign-on and access/URLs, without prior notice." ;
+    odrl:assignee :Alibaba ;
+    odrl:target :services ;
+    odrl:action odrl:modify, tosl:terminate, tosl:remove .
+
+:permDataChanges a odrl:Permission ;
+    dcterms:description "Alibaba may relocate, suspend, or cease operations at any data center, at its discretion, with reasonable prior notice to the customer." ;
+    odrl:assignee :Alibaba ;
+    odrl:target :content ;
+    odrl:action odrl:move, tosl:terminate, tosl:remove ;
+    odrl:duty :dutyReasonablePriorNotice .
+
+:dutyReasonablePriorNotice a odrl:Duty ;
+    dcterms:description "Provide reasonable prior notice to the customer before relocating, suspending, or ceasing operations at any data center." ;
+    odrl:action odrl:inform ;
+    odrl:assignee :Alibaba ;
+    odrl:informedParty :customer ;
+    odrl:target :content .
+
+############################ 3. General Product Terms ##########################
+# 3.4 Alibaba Cloud reserves the right to monitor your purchase or use of the  #
+# Products any time as needed to verify your compliance with the Product       #
+# Terms, in accordance with our Privacy Policy. You agree that you shall not   #
+# block or interfere with our monitoring.                                      #
+################################################################################
+
+:permAcceptTracking a odrl:Permission ;
+    dcterms:description "Alibaba may monitor and track the customer's purchase or use of the Products at any time to verify compliance with the Product Terms, in accordance with the Privacy Policy." ;
+    odrl:assignee :Alibaba ;
+    odrl:target :services ;
+    odrl:action odrl:acceptTracking ;
+    odrl:constraint [
+        a odrl:Constraint ;
+        odrl:leftOperand odrl:purpose ;
+        odrl:operator odrl:eq ;
+        odrl:rightOperand "verifyCompliance"
+    ] .
+
+############################ 3. General Product Terms ##########################
+# 3.5 You agree, upon Alibaba Cloud’s request, to cooperate with Alibaba Cloud #
+# to identify and resolve any problems with the Products that Alibaba Cloud    #
+# reasonably believes to be attributable to you.                               #
+################################################################################
+
+:AlibabaIssueResolutionRequest a odrl:RightOperand;
+    dcterms:description "A formal request from Alibaba Cloud to the customer for information/assistance aimed at identifying or resolving problems with the Products." .
+
+:ReasonableBeliefCustomerAttribution a odrl:RightOperand;
+    dcterms:description "Alibaba Cloud has a reasonable basis to believe the problem is attributable to the customer (e.g., usage, configuration, or actions)." .
+
+:dutyCooperateIssueResolution a odrl:Duty ;
+    dcterms:description "Upon Alibaba Cloud’s request, provide information and assistance to identify and resolve any problems with the Products that Alibaba Cloud reasonably believes to be attributable to the customer." ;
+    odrl:action odrl:inform ;
+    odrl:assignee :customer ;
+    odrl:informedParty :Alibaba ;
+    odrl:target :services;
+    odrl:constraint [
+        a odrl:Constraint ;
+        odrl:leftOperand odrl:event ;
+        odrl:operator odrl:eq ;
+        odrl:rightOperand :AlibabaIssueResolutionRequest
+    ] ;
+    odrl:constraint [
+        a odrl:Constraint ;
+        odrl:leftOperand tosl:justification ;
+        odrl:operator odrl:eq ;
+        odrl:rightOperand :ReasonableBeliefCustomerAttribution
+    ] .
+
+############################ 3. General Product Terms ##########################
+# 3.6 As a condition of your purchase and/or use of the Products, you agree    #
+# that you will comply with all applicable laws and regulations for using the  #
+# Products (including without limitation,any applicable data protection,       #
+# import,re-import,export, strategic goods control, and re-export control      #
+# laws, including any applicable license requirements,and international or     #
+# country-specific sanctions programs). If Alibaba Cloud has reason to believe #
+# that any of your conduct violates the law, infringes or misappropriates the  #
+# rights of any third party or is otherwise deceptive, fraudulent or           #
+# misleading, Alibaba Cloud may at its sole discretion notify you of our       #
+# awareness of such circumstances and may at its sole discretion take any      #
+# relevant enforcement actions against you as deemed adequate and necessary    #
+# in light of the circumstances, including but not limited to, requesting you  #
+# to remove any unlawful content, disabling or suspending your right to use    #
+# any Products, restricting your access to the Alibaba Cloud Platform,         #
+# suspending or terminating your Account, etc. Notwithstanding any of the      #
+# foregoing provisions, Alibaba Cloud shall have the right to directly remove  #
+# any content on the Alibaba Cloud Platform that may be unlawful or may        #
+# disrupt, threaten, or damage the operation and functioning of the Alibaba    #
+# Cloud Platform or other users of the Alibaba Cloud Platform.                 #
+################################################################################
+
+:permissionUseServices a odrl:Permission ;
+    dcterms:description "The customer may use the Products only if they comply with applicable laws and this agreement." ;
+    odrl:action odrl:use ;
+    odrl:assignee :customer ;
+    odrl:target :services ;
+    odrl:constraint [
+        a odrl:Constraint ;
+        odrl:leftOperand tosl:compliance ;
+        odrl:operator odrl:eq ;
+        odrl:rightOperand "https://www.alibabacloud.com/help/en/legal/latest/alibaba-cloud-international-website-product-terms-of-service-v-3-8-0"^^xsd:string
+    ] .
+
+:remedyEnforcement a odrl:Duty ;
+    dcterms:description "Alibaba may suspend or terminate the customer's access if it reasonably believes the customer is in violation." ;
+    odrl:action tosl:terminate ;
+    odrl:assignee :Alibaba ;
+    odrl:target :services ;
+    odrl:constraint [
+        a odrl:Constraint ;
+        odrl:leftOperand tosl:justification ;
+        odrl:operator odrl:eq ;
+        odrl:rightOperand tosl:breachOfContract
+    ] .
+
+############################ 3. General Product Terms ##########################
+# 3.7 Some Products require the processing of personal data of your customers  #
+# or employees. You agree that it is solely your responsibility to establish   #
+# a legal basis for the processing of such data under local law, including     #
+# providing adequate privacy notices and obtaining any required consents to    #
+# customers or employees. You represent and warrant to Alibaba Cloud that you  #
+# have a legal basis for processing this data, including obtaining any         #
+# required notices and consents, under local law. You also represent that you  #
+# will comply with any data protection laws and regulations, including but not #
+# limited to obtaining consents and rules relating to the cross-border         #
+# transfer of personal data, which may be applicable in connection with your   #
+# use of these Products.                                                       #
+################################################################################
+
+:permissionUseProducts a odrl:Permission ;
+    dcterms:description "Customer may use Products that involve processing personal data only if they comply with applicable data protection laws and have a valid legal basis." ;
+    odrl:action odrl:use ;
+    odrl:assignee :customer ;
+    odrl:target :content ;
+    odrl:constraint [
+        a odrl:Constraint ;
+        odrl:leftOperand tosl:compliance ;
+        odrl:operator odrl:eq ;
+        odrl:rightOperand :DataProtectionLaws
+    ] .
+
+:dutyRepresentationLegalBasis a odrl:Duty ;
+    dcterms:description "Represent and warrant to Alibaba that a valid legal basis exists for processing and that applicable data protection laws are complied with." ;
+    odrl:action odrl:inform ;
+    odrl:target :content ;
+    odrl:assignee :customer ;
+    odrl:informedParty :Alibaba .
+
+############################ 3. General Product Terms ##########################
+# 3.8 Alibaba Cloud may from time to time offer special terms or pricing       #
+# programs for the Products (the“Special Programs”). Alibaba Cloud shall have  #
+# the right to stop accepting any application for any Special Programs or      #
+# discontinue the offering of any Special Programs without notifying you.      #
+# You must agree to any terms and conditions for the Special Programs if you   #
+# choose to participate in such.                                               #
+################################################################################
+
+:specialPrograms a odrl:Asset .
+
+:permissionPublishSpecialPrograms a odrl:Permission ;
+    dcterms:description "Alibaba may publish Special Programs." ;
+    odrl:action tosl:publish ;
+    odrl:target :specialPrograms ;
+    odrl:assignee :Alibaba .
+
+:permissionParticipateSpecialPrograms a odrl:Permission ;
+    dcterms:description "Customer may participate in Special Programs only after giving explicit consent to the applicable terms." ;
+    odrl:action odrl:use ;
+    odrl:assignee :customer ;
+    odrl:target :specialPrograms ;
+    odrl:duty :dutyExplicitConsent .
+
+:dutyExplicitConsent a odrl:Duty ;
+    dcterms:description "Provide explicit consent to the applicable Special Program terms before participation." ;
+    odrl:action odrl:inform ;
+    odrl:assignee :customer ;
+    odrl:informedParty :Alibaba ;
+    odrl:target :specialPrograms ;
+    odrl:constraint
+        [   
+            a odrl:Constraint ;
+            odrl:leftOperand tosl:consentType ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand tosl:explicitConsent
+        ] .
+
+
+############################ 3. General Product Terms ##########################
+# 3.9 Alibaba Cloud shall have the right to apply any upgrades or engage in    #
+# any service maintenances any time as deemed necessary. Alibaba Cloud will    #
+# use commercially reasonable endeavors to notify you in advance of any        #
+# scheduled maintenance of the Alibaba Cloud Platform or the Products and you  #
+# shall comply with any maintenance requirements for the Products that we      #
+# notify you about.                                                            #
+################################################################################
+
+:permissionModifyForMaintenance a odrl:Permission ;
+    dcterms:description "Alibaba may modify the Platform or Products for maintenance, provided prior notice is given." ;
+    odrl:action odrl:modify ;
+    odrl:assignee :Alibaba ;
+    odrl:target :services ;
+    odrl:constraint [
+        a odrl:Constraint ;
+        odrl:leftOperand tosl:justification ;
+        odrl:operator odrl:eq ;
+        odrl:rightOperand :maintenance
+    ] ;
+    odrl:duty [
+        a odrl:Duty ;
+        dcterms:description "Provide prior notice of scheduled maintenance to the customer." ;
+        odrl:action odrl:inform ;
+        odrl:assignee :Alibaba ;
+        odrl:informedParty :customer ;
+        odrl:target :services ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand odrl:event ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand :PriorNotice
+        ]
+    ] .
+
+
+############################ 3. General Product Terms ##########################
+# 3.10 Alibaba Cloud shall have the right to assign and/or novate any part of  #
+# or all of the Terms (including any of our rights, titles, benefits,          #
+# interests, obligations and duties in the Terms and this Agreement) to any    #
+# person or entity (including any affiliates of Alibaba Cloud). Alibaba Cloud  #
+# may by written notice to you (which may be posted on the Alibaba             #
+# Cloud Platform) require such novation of the Terms or any part thereof, and  #
+# you hereby irrevocably agree and consent to any such novation, whereupon     #
+# Alibaba Cloud shall be released and discharged from all of its obligations   #
+# under these Terms, as well as all claims, actions and demands arising under  #
+# these Terms up to the time of such novation. You may not assign, in whole or #
+# part, any of the Terms (including this Agreement) to any person or entity.   #
+################################################################################
+
+:permissionModifyTermsForNovation a odrl:Permission ;
+    dcterms:description "Alibaba may modify the Terms for novation, prior written notice (including posting on the Platform) is required." ;
+    odrl:action odrl:modify ;
+    odrl:assignee :Alibaba ;
+    odrl:target :AlibabaTermsOfService ;
+    odrl:duty [
+        a odrl:Duty ;
+        dcterms:description "Provide prior written notice or post on the Platform before the modification (novation) takes effect." ;
+        odrl:action odrl:inform ;
+        odrl:assignee :Alibaba ;
+        odrl:target :AlibabaTermsOfService ;
+        odrl:informedParty :customer
+    ] .
