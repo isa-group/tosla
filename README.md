@@ -143,12 +143,12 @@ Partial example of how the terms of an SLA would be modelled. In particular, it 
 ## Repository Structure
 
 `bin/`
-Scripts for running SPARQL queries.TThe "competency_quetion_evaluation.ipynb" notebook executes all queries on the modelled SLAs.
+Scripts for running SPARQL queries. The "TOSLA_Analysis_of_Customer_Agreements.ipynb" notebook executes all queries on the modelled SLAs.
 
 `docs/` Contains the TOSLA Ontology Requirements Specification Document.
 
 `examples/`
-TOSLA representations of real agreements.
+TOSLA representations of real agreements include Amazon, Cedalo, and Alibaba.
 
 `img/` Contains the conceptual metamodel.
 
@@ -164,8 +164,9 @@ Ontology file (TBox), defining structured concepts.
 
 1. Clone the repository.
 2. Open the file `bin/competency_questions_evaluation.ipynb`.
-3. First part of the notebook is the TOSLA validator and later the Competency Questions, Potentially unfair terms and the obligations, permissions, and prohibitions of the parties.
-4. Execute the code cell and modify the KG as needed.
+3. Execute `Run All` and select your Python enviroment (version 3.10)
+4. The first part of the notebook runs the TOSLA validator, followed by the sections for Competency Questions, Potentially Unfair Terms, and the Obligations, Permissions, and Prohibitions of the parties.
+5. Execute the code cell and modify the KG as needed.
 
 ### Competency Questions Example
 **CQ1:** *Which services are governed by the SLA?*  Below is an example of a SPARQL query to parse and execute this competency question.
