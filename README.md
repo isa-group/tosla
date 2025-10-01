@@ -163,7 +163,7 @@ Ontology file (TBox), defining structured concepts.
 ## Running a Query Using Jupiter Notebook
 
 1. Clone the repository.
-2. Open the file `bin/competency_questions_evaluation.ipynb`.
+2. Open the file `bin/TOSLA_Analysis_of_Customer_Agreements.ipynb`.
 3. Execute `Run All` and select your Python enviroment (version 3.10)
 4. The first part of the notebook runs the TOSLA validator, followed by the sections for Competency Questions, Potentially Unfair Terms, and the Obligations, Permissions, and Prohibitions of the parties.
 5. Execute the code cell and modify the KG as needed.
