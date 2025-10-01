@@ -27,7 +27,9 @@
     odrl:profile <https://w3id.org/tosl/> ;
     odrl:assigner :Alibaba ;
     odrl:target :services ;
-    tosl:onDispute :europeDisputeResolution .
+    tosl:onDispute :europeDisputeResolution ;
+    tosl:liability :liabilityNonExcludableEUCustomer, :liabilityNonExcludableEUProvider ;
+    tosl:limitationOfLiability :noWarrantyForResellerEndUser, :liabilityReseller .
 
 ### Parties
 :Alibaba a tosl:Provider, foaf:Organization ;
@@ -667,6 +669,36 @@
         odrl:assignee :Alibaba ;
         odrl:target :AlibabaTermsOfService ;
         odrl:informedParty :customer
+    ] .
+
+
+########## Europe Addendum to Alibaba Cloud Product Terms of Service ###########
+# 2. Nothing in these Product Terms shall be construed as excluding or         #
+# limiting the liability of you or Alibaba Cloud or any of our respective      #
+# officers, employees and agents for any liability which cannot be limited or  #
+# excluded by law.                                                             #
+################################################################################
+
+:liabilityNonExcludableEUProvider a tosl:Liability ;
+    dcterms:description "Nothing in these Product Terms excludes or limits the liability of either party (including officers, employees, and agents) for any liability that cannot be excluded or limited by law (EU Addendum)." ;
+    tosl:liableParty :Alibaba ;
+    tosl:targetParty :customer ;
+    rdf:value tosl:legalCompliance ;
+    odrl:constraint [
+        odrl:leftOperand odrl:spatial ;
+        odrl:operator odrl:eq ;
+        odrl:rightOperand <http://sws.geonames.org/6255148/>          
+    ] .
+
+:liabilityNonExcludableEUCustomer a tosl:Liability ;
+    dcterms:description "Nothing in these Product Terms excludes or limits the liability of either party (including officers, employees, and agents) for any liability that cannot be excluded or limited by law (EU Addendum)." ;
+    tosl:liableParty :customer ;
+    tosl:targetParty :Alibaba ;
+    rdf:value tosl:legalCompliance ;
+    odrl:constraint [
+        odrl:leftOperand odrl:spatial ;
+        odrl:operator odrl:eq ;
+        odrl:rightOperand <http://sws.geonames.org/6255148/>          
     ] .
 
 

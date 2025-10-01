@@ -83,6 +83,7 @@
     dcterms:description "Percentage of the net monthly subscription fee applicable to the use of the service and non-refundable as cash."@en .
 
 :unavailabilityDurationPerHour a odrl:LeftOperand ;
+    rdfs:label "Unavailability Per Hour"@en ;
     dcterms:description "Number of minutes a single EC2 instance is unavailable within a clock hour" ;
     usdl-agreement:hasMetric :unavailabilityDurationPerHourMetric .
 

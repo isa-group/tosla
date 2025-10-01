@@ -66,12 +66,12 @@
 #################################################
 
 :monthlyUptimePercentageInstanceUnavailable a odrl:LeftOperand ;
-    rdfs:label "Monthly Uptime Percentage - Instance Unavailable"@en ;
+    rdfs:label "Instance Monthly Uptime Percentage"@en ;
     dcterms:description "Percentage availability per ECS instance in the month." ;
     usdl-agreement:hasMetric :monthlyUptimeMetric .
 
 :monthlyUptimePercentageMultiZoneUnavailable a odrl:LeftOperand ;
-    rdfs:label "Monthly Uptime Percentage - Multi-zone Service Unavailable"@en ;
+    rdfs:label "Multi-zone Monthly Uptime Percentage"@en ;
     dcterms:description "Availability for ECS multi-zone deployments." ;
     usdl-agreement:hasMetric :monthlyUptimeMetric .
 
