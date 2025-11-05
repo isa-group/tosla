@@ -681,10 +681,11 @@
 
 :liabilityNonExcludableEUProvider a tosl:Liability ;
     dcterms:description "Nothing in these Product Terms excludes or limits the liability of either party (including officers, employees, and agents) for any liability that cannot be excluded or limited by law (EU Addendum)." ;
+    rdf:value tosl:legalCompliance ;
     tosl:liableParty :Alibaba ;
     tosl:targetParty :customer ;
-    rdf:value tosl:legalCompliance ;
-    odrl:constraint [
+    tosl:limitation [
+        a odrl:Constraint ;
         odrl:leftOperand odrl:spatial ;
         odrl:operator odrl:eq ;
         odrl:rightOperand <http://sws.geonames.org/6255148/>          
@@ -695,7 +696,8 @@
     tosl:liableParty :customer ;
     tosl:targetParty :Alibaba ;
     rdf:value tosl:legalCompliance ;
-    odrl:constraint [
+    tosl:limitation [
+        a odrl:Constraint ;
         odrl:leftOperand odrl:spatial ;
         odrl:operator odrl:eq ;
         odrl:rightOperand <http://sws.geonames.org/6255148/>          

@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from rdflib import Graph
 from matplotlib.ticker import PercentFormatter
+from tabulate import tabulate
 import numpy as np
 
 # CQ1: Number of services per provider
@@ -24,70 +25,99 @@ def plot_CQ1_services(df1):
         plt.tight_layout()
         plt.show()
 
-# CQ2: SLOs per SLI and provider
+# CQ2: Target objective per SLI and provider
 def plot_CQ2_metrics(df2, shorten, to_num):
     if df2.empty:
-        print("Sin resultados para CQ2.")
-    else:
-        cols = [c for c in ["SLI","operator","objectiveValue","service","provider"] if c in df2.columns]
-        df2[cols] = df2[cols].applymap(shorten)
-        df2["objectiveNum"] = df2["objectiveValue"].map(to_num) if "objectiveValue" in df2.columns else None
-        long = (
-            df2.dropna(subset=["objectiveNum"])
-            .groupby(["SLI","provider"], as_index=False)["objectiveNum"].max()
-            .sort_values(["SLI","provider"])
-        )
-        if long.empty:
-            print("No hay valores numéricos de SLO para graficar.")
-        else:
-            g = sns.catplot(
-                data=long, kind="bar",
-                y="provider", x="objectiveNum",
-                col="SLI", col_wrap=2,
-                sharex=False, height=3.2, aspect=1.4,
-                palette="Set2"
-            )
-            g.set_xlabels("Objetivo (SLO)")
-            g.set_ylabels("Proveedor")
-            for ax in g.axes.flat:
-                for c in ax.containers:
-                    ax.bar_label(c, fmt="%.3f", padding=2)
-            g.fig.suptitle("SLO por SLI y proveedor", y=1.02, fontsize=12)
-            plt.tight_layout()
-            plt.show()
+        print("No results for CQ2.")
+        return
+
+    df = df2.copy()
+
+    for col in ["SLI", "operator", "objectiveValue", "service", "provider"]:
+        if col in df.columns:
+            df[col] = df[col].map(shorten)
+
+    if "objectiveValue" not in df.columns:
+        print("No 'objectiveValue' column in CQ2 results.")
+        return
+
+    df["targetObjective"] = df["objectiveValue"].map(to_num)
+
+    long = (
+        df.dropna(subset=["targetObjective"])
+          .groupby(["provider", "service", "SLI"], as_index=False)["targetObjective"].max()
+          .sort_values(["provider", "service", "SLI"])
+    )
+
+    if long.empty:
+        print("No numeric target objectives to display.")
+        return
+
+    wide = (
+        long
+        .pivot(index=["provider", "service"], columns="SLI", values="targetObjective")
+        .reset_index()
+    )
+
+    if wide.empty:
+        print("Nothing to display after pivot.")
+        return
+
+    new_cols = {}
+    for c in wide.columns:
+        if c not in ["provider", "service"]:
+            new_cols[c] = f"{c} (target objective)"
+    wide = wide.rename(columns=new_cols)
+
+    print(tabulate(wide, headers="keys", tablefmt="grid", showindex=False))
+
 
 # CQ3: SLI coverage by service and provider
+from tabulate import tabulate
+
 def plot_CQ3_sli(df3, shorten):
     if df3.empty:
         print("No results for CQ3.")
-    else:
-        for c in ["service", "SLI", "provider"]:
-            if c in df3.columns:
-                df3[c] = df3[c].map(shorten)
+        return
 
-        counts = (
-            df3.groupby(["provider", "service"])["SLI"]
-            .nunique()
-            .reset_index(name="num_SLIs")
-        )
-        g = sns.catplot(
-            data=counts,
-            kind="bar",
-            x="num_SLIs",
-            y="service",
-            hue="provider",
-            height=6,
-            aspect=1.4,
-            palette="Set2"
-        )
-        g.set_xlabels("Number of guaranteed SLIs")
-        g.set_ylabels("Service")
-        g.fig.suptitle("SLI coverage by service and provider", fontsize=14, y=1.02)
-        g.legend.set_title("Provider") 
-        g.legend.set_bbox_to_anchor((1, 1)) 
-        g.legend.set_loc("upper left") 
-        plt.tight_layout() 
-        plt.show()
+    df = df3.copy()
+
+    for c in ["service", "SLI", "provider"]:
+        if c in df.columns:
+            df[c] = df[c].map(shorten)
+
+    coverage = (
+        df.groupby(["provider", "SLI"])["service"]
+          .nunique()
+          .reset_index(name="num_services")
+          .sort_values(["provider", "SLI"])
+    )
+
+    if coverage.empty:
+        print("No SLI coverage to display.")
+        return
+
+    summary = (
+        coverage.groupby("provider")["SLI"]
+                .nunique()
+                .reset_index(name="num_SLIs")
+                .sort_values("num_SLIs", ascending=False)
+    )
+
+    print("Number of distinct guaranteed SLIs per provider:")
+    print(tabulate(summary, headers="keys", tablefmt="grid", showindex=False))
+
+    pivot = (
+        coverage
+        .pivot(index="provider", columns="SLI", values="num_services")
+        .fillna(0)
+        .astype(int)
+        .reset_index()
+    )
+
+    print("\nNumber of services that guarantee each SLI (per provider):")
+    print(tabulate(pivot, headers="keys", tablefmt="grid", showindex=False))
+
 
 
 # CQ4: Compensation relationship between SLI threshold and credit
@@ -231,51 +261,7 @@ def plot_CQ6_responsibilities(df6, shorten):
         ax.legend(title="Responsible party", bbox_to_anchor=(1.02, 1), loc="upper left")
         plt.tight_layout()
         plt.show()
-
-
-# CQ8: Metrics with expressions and units by provider
-def plot_CQ8_metrics(df8, shorten):
-    if df8.empty:
-        print("No results for CQ8.")
-    else:
-        for c in ["leftOperand", "expression", "unit", "provider"]:
-            if c in df8.columns:
-                df8[c] = df8[c].map(shorten)
-
-        base = (
-            df8.groupby(["provider", "leftOperand"], as_index=False)
-            .agg(has_expr=("expression", lambda s: s.notna().any()),
-                    has_unit=("unit", lambda s: s.notna().any()))
-        )
-
-        agg = (
-            base.groupby("provider")
-                .agg(total=("leftOperand", "nunique"),
-                    expr=("has_expr", "sum"),
-                    unit=("has_unit", "sum"))
-                .reset_index()
-        )
-        agg["expr_pct"] = 100 * agg["expr"] / agg["total"]
-        agg["unit_pct"] = 100 * agg["unit"] / agg["total"]
-
-        import seaborn as sns
-        import matplotlib.pyplot as plt
-
-        fig, axes = plt.subplots(1, 2, figsize=(10, 4))
-        sns.barplot(data=agg, x="provider", y="expr_pct", ax=axes[0], palette="Set2")
-        axes[0].set_title("Metrics with expression (%)")
-        axes[0].set_ylabel("%")
-        axes[0].set_xlabel("Provider")
-
-        sns.barplot(data=agg, x="provider", y="unit_pct", ax=axes[1], palette="Set2")
-        axes[1].set_title("Metrics with unit (%)")
-        axes[1].set_ylabel("%")
-        axes[1].set_xlabel("Provider")
-
-        plt.tight_layout()
-        plt.show()
-
-
+        
 
 # Alibaba unfair-terms clauses heatmap
 def heatmap_Alibaba_utd(utd):

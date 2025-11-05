@@ -65,14 +65,9 @@
 # Properties 
 #################################################
 
-:monthlyUptimePercentageInstanceUnavailable a odrl:LeftOperand ;
-    rdfs:label "Instance Monthly Uptime Percentage"@en ;
-    dcterms:description "Percentage availability per ECS instance in the month." ;
-    usdl-agreement:hasMetric :monthlyUptimeMetric .
-
-:monthlyUptimePercentageMultiZoneUnavailable a odrl:LeftOperand ;
-    rdfs:label "Multi-zone Monthly Uptime Percentage"@en ;
-    dcterms:description "Availability for ECS multi-zone deployments." ;
+:monthlyUptimePercentage a odrl:LeftOperand ;
+    rdfs:label "Monthly Uptime Percentage"@en ;
+    dcterms:description "Percentage availability in the month." ;
     usdl-agreement:hasMetric :monthlyUptimeMetric .
 
 :monthlyUptimeMetric a usdl-agreement:Metric ;
@@ -124,7 +119,7 @@
         rdf:value tosla:guarantee;
         odrl:refinement [
             a odrl:Constraint;
-            odrl:leftOperand :monthlyUptimePercentageInstanceUnavailable ;
+            odrl:leftOperand :monthlyUptimePercentage ;
             odrl:operator odrl:gteq ;
             odrl:rightOperand "99.975"^^xsd:decimal ;
             odrl:unit <http://qudt.org/vocab/unit#Percent>
@@ -169,7 +164,7 @@
         ] ;
     ] ;
     odrl:constraint [
-        odrl:leftOperand :monthlyUptimePercentageInstanceUnavailable ;
+        odrl:leftOperand :monthlyUptimePercentage ;
         odrl:operator odrl:lt ;
         odrl:rightOperand "99.975"^^xsd:decimal ;
         odrl:unit <http://qudt.org/vocab/unit#Percent>
@@ -197,14 +192,14 @@
         odrl:and (
             [ 
                 a odrl:Constraint ;
-                odrl:leftOperand :monthlyUptimePercentageInstanceUnavailable ; 
+                odrl:leftOperand :monthlyUptimePercentage ; 
                 odrl:operator odrl:gteq ; 
                 odrl:rightOperand "99.0"^^xsd:decimal ;
                 odrl:unit <http://qudt.org/vocab/unit#Percent>
             ]
             [ 
                 a odrl:Constraint ;
-                odrl:leftOperand :monthlyUptimePercentageInstanceUnavailable ; 
+                odrl:leftOperand :monthlyUptimePercentage ; 
                 odrl:operator odrl:lt ; 
                 odrl:rightOperand "99.975"^^xsd:decimal ;
                 odrl:unit <http://qudt.org/vocab/unit#Percent>
@@ -233,14 +228,14 @@
         odrl:and (
             [ 
                 a odrl:Constraint ;
-                odrl:leftOperand :monthlyUptimePercentageInstanceUnavailable ; 
+                odrl:leftOperand :monthlyUptimePercentage ; 
                 odrl:operator odrl:gteq ; 
                 odrl:rightOperand "95.0"^^xsd:decimal ;
                 odrl:unit <http://qudt.org/vocab/unit#Percent>
             ]            
             [ 
                 a odrl:Constraint ;
-                odrl:leftOperand :monthlyUptimePercentageInstanceUnavailable ; 
+                odrl:leftOperand :monthlyUptimePercentage ; 
                 odrl:operator odrl:lt ; 
                 odrl:rightOperand "99.0"^^xsd:decimal ;
                 odrl:unit <http://qudt.org/vocab/unit#Percent>
@@ -266,7 +261,7 @@
     ] ;
     odrl:constraint [
         a odrl:Constraint ;
-        odrl:leftOperand :monthlyUptimePercentageInstanceUnavailable ; 
+        odrl:leftOperand :monthlyUptimePercentage ; 
         odrl:operator odrl:lt ; 
         odrl:rightOperand "95.0"^^xsd:decimal ;
         odrl:unit <http://qudt.org/vocab/unit#Percent>
@@ -283,7 +278,7 @@
         rdf:value tosla:guarantee;
         odrl:refinement [
             a odrl:Constraint;
-            odrl:leftOperand :monthlyUptimePercentageMultiZoneUnavailable ;
+            odrl:leftOperand :monthlyUptimePercentage ;
             odrl:operator odrl:gteq ;
             odrl:rightOperand "99.995"^^xsd:decimal ;
             odrl:unit <http://qudt.org/vocab/unit#Percent>
@@ -327,7 +322,7 @@
         ] ;
     ] ;
     odrl:constraint [
-        odrl:leftOperand :monthlyUptimePercentageMultiZoneUnavailable ;
+        odrl:leftOperand :monthlyUptimePercentage ;
         odrl:operator odrl:lt ;
         odrl:rightOperand "99.995"^^xsd:decimal ;
         odrl:unit <http://qudt.org/vocab/unit#Percent>
@@ -355,14 +350,14 @@
         odrl:and (
             [ 
                 a odrl:Constraint ;
-                odrl:leftOperand :monthlyUptimePercentageMultiZoneUnavailable ; 
+                odrl:leftOperand :monthlyUptimePercentage ; 
                 odrl:operator odrl:gteq ; 
                 odrl:rightOperand "99.0"^^xsd:decimal ;
                 odrl:unit <http://qudt.org/vocab/unit#Percent>
             ]
             [ 
                 a odrl:Constraint ;
-                odrl:leftOperand :monthlyUptimePercentageMultiZoneUnavailable ; 
+                odrl:leftOperand :monthlyUptimePercentage ; 
                 odrl:operator odrl:lt ; 
                 odrl:rightOperand "99.995"^^xsd:decimal ;
                 odrl:unit <http://qudt.org/vocab/unit#Percent>
@@ -391,14 +386,14 @@
         odrl:and (
             [ 
                 a odrl:Constraint ;
-                odrl:leftOperand :monthlyUptimePercentageMultiZoneUnavailable ; 
+                odrl:leftOperand :monthlyUptimePercentage ; 
                 odrl:operator odrl:gteq ; 
                 odrl:rightOperand "95.0"^^xsd:decimal ;
                 odrl:unit <http://qudt.org/vocab/unit#Percent>
             ]            
             [ 
                 a odrl:Constraint ;
-                odrl:leftOperand :monthlyUptimePercentageMultiZoneUnavailable ; 
+                odrl:leftOperand :monthlyUptimePercentage ; 
                 odrl:operator odrl:lt ; 
                 odrl:rightOperand "99.0"^^xsd:decimal ;
                 odrl:unit <http://qudt.org/vocab/unit#Percent>
@@ -424,7 +419,7 @@
     ] ;
     odrl:constraint [
         a odrl:Constraint ;
-        odrl:leftOperand :monthlyUptimePercentageMultiZoneUnavailable ; 
+        odrl:leftOperand :monthlyUptimePercentage ; 
         odrl:operator odrl:lt ; 
         odrl:rightOperand "95.0"^^xsd:decimal ;
         odrl:unit <http://qudt.org/vocab/unit#Percent>
