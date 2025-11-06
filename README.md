@@ -9,6 +9,26 @@ With this model, based on a set of existing ontologies and domain-specific vocab
 - The conditions, metrics, and evaluation periods that determine the activation of these obligations.
 - The exclusions of the provider's liability in cases of service unavailability due to certain circumstances beyond its control, which can also be formally defined as conditional clauses.  
 
+## Repository Structure
+
+`bin/`
+Scripts for running SPARQL queries. The "TOSLA_Analysis_of_Customer_Agreements.ipynb" notebook executes all queries on the modelled SLAs.
+
+`docs/` Contains the TOSLA Ontology Requirements Specification Document.
+
+`examples/`
+TOSLA representations of real agreements include Amazon, Cedalo, and Alibaba.
+
+`img/` Contains the conceptual metamodel.
+
+`sparql_queries/`
+SPARQL queries for analysing SLA information, deontic modalities and identifying potentially abusive terms.
+
+`validator/` SHACL rules for testing SLA representation conformance to the TOSLA structure.
+
+`tosla.ttl`
+Ontology file (TBox), defining structured concepts.
+
 ## Profile diagram
 
 ![ontology_model](img/tosla_model_core_concepts.png)
@@ -139,26 +159,6 @@ Partial example of how the terms of an SLA would be modelled. In particular, it 
         )
     ] .
 ```
-
-## Repository Structure
-
-`bin/`
-Scripts for running SPARQL queries. The "TOSLA_Analysis_of_Customer_Agreements.ipynb" notebook executes all queries on the modelled SLAs.
-
-`docs/` Contains the TOSLA Ontology Requirements Specification Document.
-
-`examples/`
-TOSLA representations of real agreements include Amazon, Cedalo, and Alibaba.
-
-`img/` Contains the conceptual metamodel.
-
-`sparql_queries/`
-SPARQL queries for analysing SLA information, deontic modalities and identifying potentially abusive terms.
-
-`validator/` SHACL rules for testing SLA representation conformance to the TOSLA structure.
-
-`tosla.ttl`
-Ontology file (TBox), defining structured concepts.
 
 ## Running a Query Using Jupiter Notebook
 

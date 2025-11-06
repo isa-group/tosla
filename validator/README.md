@@ -1,4 +1,4 @@
-## TOSL Validator
+## TOSLA Validator
 
 These diagrams represent the **validator shapes** for **TOSLA**. They visually define how **permissions**, **obligations**, **prohibitions**, **dispute resolution**, and **liability** statements are validated using **SHACL**, including validation of the predefined instances.
 
